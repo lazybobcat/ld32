@@ -30,7 +30,9 @@ namespace Textures
         HeroJumpingWithout,
         Platforms,
         Unicorn,
-        Zombies,
+        ZombieWalking,
+        ZombieAttacking,
+        ZombieDying,
         Cursor
     };
 }

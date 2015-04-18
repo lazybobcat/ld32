@@ -34,7 +34,9 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mTextures.load(Textures::HeroJumpingWithout,"assets/textures/hero-jumpingwithout.png");
     mTextures.load(Textures::Platforms,     "assets/textures/platforms.png");
     mTextures.load(Textures::Unicorn,       "assets/textures/unicorn.png");
-    mTextures.load(Textures::Zombies,       "assets/textures/zombies.png");
+    mTextures.load(Textures::ZombieAttacking,"assets/textures/zombies-attacking.png");
+    mTextures.load(Textures::ZombieWalking, "assets/textures/zombies-walking.png");
+    mTextures.load(Textures::ZombieDying,   "assets/textures/zombies-dying.png");
     mTextures.load(Textures::Cursor,        "assets/textures/unicorn_cursor.png");
     mScripts.registerFile(Scripts::HelloWorld, "assets/scripts/helloworld.lua");
 

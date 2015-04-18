@@ -14,6 +14,10 @@ Player::Player(TextureHolder &textures) :
     mFired(false)
 {
     textures.get(Textures::Hero).setSmooth(false);
+    textures.get(Textures::HeroWalkingWithout).setSmooth(false);
+    textures.get(Textures::HeroWalkingWith).setSmooth(false);
+    textures.get(Textures::HeroJumpingWithout).setSmooth(false);
+    textures.get(Textures::HeroJumpingWith).setSmooth(false);
 
     mStandingWithoutSprite.setTexture(textures.get(Textures::Hero));
     mStandingWithoutSprite.setTextureRect(sf::IntRect(0,0,75,75));
