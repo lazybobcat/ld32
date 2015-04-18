@@ -48,7 +48,9 @@ SOURCES += main.cpp \
     entities/player.cpp \
     entities/unicornpathqueue.cpp \
     entities/unicorn.cpp \
-    entities/zombie.cpp
+    entities/zombie.cpp \
+    controllers/AIStates/aistate.cpp \
+    controllers/AIStates/aistatemachine.cpp
 
 OTHER_FILES +=
 
@@ -92,6 +94,8 @@ HEADERS += \
     entities/player.h \
     entities/unicornpathqueue.h \
     entities/unicorn.h \
-    entities/zombie.h
+    entities/zombie.h \
+    controllers/AIStates/aistate.h \
+    controllers/AIStates/aistatemachine.h
 
 

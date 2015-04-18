@@ -1,9 +1,11 @@
 #include "zombie.h"
+#include <controllers/AIStates/aistate.h>
 
 Zombie::Zombie(TextureHolder &textures) :
     Entity(10),
     mIsAttacking(false),
-    mMovingAnimation(false)
+    mMovingAnimation(false),
+    mCurrentBehavior(nullptr)
 {
     textures.get(Textures::ZombieWalking).setSmooth(false);
     textures.get(Textures::ZombieAttacking).setSmooth(false);
@@ -32,11 +34,37 @@ Zombie::Zombie(TextureHolder &textures) :
 }
 
 
+Zombie::~Zombie()
+{
+    if(mCurrentBehavior)
+    {
+        mCurrentBehavior->deinit(*this);
+        delete(mCurrentBehavior);
+    }
+}
+
 
 void Zombie::attack()
 {
     mIsAttacking = true;
     mAnimations[Attacking].restart();
+}
+
+
+void Zombie::setBehavior(AIState *behavior)
+{
+    if(mCurrentBehavior)
+    {
+        mCurrentBehavior->deinit(*this);
+        delete(mCurrentBehavior);
+        mCurrentBehavior = nullptr;
+    }
+
+    if(behavior)
+    {
+        mCurrentBehavior = behavior;
+        mCurrentBehavior->init(*this);
+    }
 }
 
 
@@ -64,6 +92,15 @@ void Zombie::setDirection(Direction dir)
 
 void Zombie::updateCurrent(sf::Time dt, CommandQueue &commands)
 {
+    if(mCurrentBehavior)
+    {
+        AIState* nextState = mCurrentBehavior->run(*this);
+        if(nextState)
+        {
+            setBehavior(nextState);
+        }
+    }
+
     // Update animations
     updateAnimation(dt);
 

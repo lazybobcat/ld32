@@ -5,6 +5,8 @@
 #include <resources/animation.h>
 #include <array>
 
+class AIState;
+
 class Zombie : public Entity
 {
 public:
@@ -17,8 +19,11 @@ public:
 
 public:
     Zombie(TextureHolder& textures);
+    virtual ~Zombie();
 
     void        attack();
+
+    void        setBehavior(AIState* behavior);
 
     virtual bool isCollidable() const { return true; }
     virtual int  getAttackPower() const { return 20; }
@@ -36,6 +41,9 @@ private:
     std::array<Animation, 3> mAnimations;
     bool                     mIsAttacking;
     bool                     mMovingAnimation;
+
+    // States / Behaviors
+    AIState*                mCurrentBehavior;
 };
 
 #endif // ZOMBIE_H
