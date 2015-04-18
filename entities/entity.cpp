@@ -4,6 +4,8 @@
 
 Entity::Entity(int healthpoints) :
     SceneNode(Category::None),
+    mIsJumping(false),
+    mVerticalVelocity(0.f),
     mHorizontalVelocity(300.f),
     mHealthpoints(healthpoints),
     mJustGetHurt(false),
@@ -14,8 +16,10 @@ Entity::Entity(int healthpoints) :
 {
 }
 
-void Entity::updateCurrent(sf::Time dt)
+void Entity::updateCurrent(sf::Time dt, CommandQueue &/*commands*/)
 {
+    updatePhysics(dt);
+
     if(isDestroyed())
             return;
 
@@ -45,6 +49,36 @@ void Entity::updateCurrent(sf::Time dt)
         }
         mIsMoving = false;
     }
+}
+
+void Entity::applyPhysics(sf::Time dt, float gravity, sf::RenderWindow& window)
+{
+    float delta = gravity*dt.asSeconds();
+    mVerticalVelocity += delta;
+    if(mVerticalVelocity >= (delta * 1.25f)) // <==> If falling for more than 0.25sec
+    {
+        mIsJumping = true;
+    }
+
+    sf::Vector2f pos = getPosition();
+
+    if(pos.x < 0)
+    {
+        pos.x = 0;
+    }
+    else if(pos.x > window.getSize().x)
+    {
+        pos.x = window.getSize().x;
+    }
+
+    setPosition(pos);
+}
+
+void Entity::updatePhysics(sf::Time dt)
+{
+    auto pos = getPosition();
+    pos.y = pos.y + mVerticalVelocity * dt.asSeconds();
+    setPosition(pos);
 }
 
 

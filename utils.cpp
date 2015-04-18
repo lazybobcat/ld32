@@ -47,6 +47,11 @@ sf::Vector2f unitVector(sf::Vector2f vector)
     return (vector / length(vector));
 }
 
+float distance(const sf::Vector2f &lhs, const sf::Vector2f &rhs)
+{
+    return length(lhs - rhs);
+}
+
 /////////////////////////////
 
 int randomInt(int min, int max)

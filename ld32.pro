@@ -46,7 +46,9 @@ SOURCES += main.cpp \
     states/gamestate.cpp \
     entities/platform.cpp \
     entities/player.cpp \
-    entities/unicornpathqueue.cpp
+    entities/unicornpathqueue.cpp \
+    entities/unicorn.cpp \
+    entities/zombie.cpp
 
 OTHER_FILES +=
 
@@ -88,6 +90,8 @@ HEADERS += \
     states/gamestate.h \
     entities/platform.h \
     entities/player.h \
-    entities/unicornpathqueue.h
+    entities/unicornpathqueue.h \
+    entities/unicorn.h \
+    entities/zombie.h
 
 

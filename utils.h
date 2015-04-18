@@ -18,6 +18,7 @@ void centerOrigin(Animation& animation);
 // Math
 float length(sf::Vector2f vector);
 sf::Vector2f unitVector(sf::Vector2f vector);
+float distance(const sf::Vector2f &lhs, const sf::Vector2f &rhs);
 
 // Random number generation
 int     randomInt(int min, int max);

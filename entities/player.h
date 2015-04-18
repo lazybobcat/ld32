@@ -4,6 +4,7 @@
 #include <entities/entity.h>
 #include <resources/animation.h>
 #include <array>
+#include <vector>
 
 class World;
 class PlayerController;
@@ -11,8 +12,7 @@ class PlayerController;
 class Player : public Entity
 {
 public:
-    friend class World;  // Boooooo that's so dirtyyyyy...
-    friend class PlayerController;  // Less dirty, but still ...
+    friend class PlayerController;  // Dirty
 
     enum Animations
     {
@@ -27,9 +27,10 @@ public:
 
     void        jump();
     void        fire(std::vector<sf::Vector2f>& path);
+    void        retrieve();
 
     virtual bool isCollidable() const { return true; }
-    virtual int getAttackPower() const { return 0; }
+    virtual int  getAttackPower() const { return 0; }
     virtual void setDirection(Direction dir);
 
     virtual sf::FloatRect   getBoundingRect() const;
@@ -37,11 +38,13 @@ public:
 
 
 protected:
-    virtual void updateCurrent(sf::Time dt);
+    virtual void updateCurrent(sf::Time dt, CommandQueue &commands);
     virtual void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const;
     void         updateAnimation(sf::Time dt);
 
 private:
+    TextureHolder& mTextures;
+
     sf::Sprite  mStandingWithSprite;
     sf::Sprite  mStandingWithoutSprite;
     std::array<Animation, 4> mAnimations;
@@ -49,12 +52,10 @@ private:
     sf::Sprite  mDeadWithSprite;
     bool        mMovingAnimation;
 
-    // Physic state
-    bool        mIsJumping;
-    float       mVerticalVelocity;
-
     // Attacking state
+    bool        mIsFiring;
     bool        mFired;
+    std::vector<sf::Vector2f> mFirePath;
 };
 
 #endif // PLAYER_H

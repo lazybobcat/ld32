@@ -18,6 +18,7 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mStatisticsUpdateTime(),
     mStatisticsNumFrames(0)
 {
+    mWindow.setPosition(sf::Vector2i(0,0));
     mWindow.setKeyRepeatEnabled(false);
     mWindow.setMouseCursorVisible(false);
 

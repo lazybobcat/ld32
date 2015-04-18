@@ -17,16 +17,17 @@ public:
         Left
     };
 
+
 public:
     Entity(int healthpoints = 1);
 
-    void        damage(int points);
-    void        heal(int points);
-    void        destroy();
-    int         getHealthpoints() const;
-    virtual bool        isDestroyed() const;
-    virtual int getAttackPower() const { return 0; }
-    bool        isKnocked() const;
+    void            damage(int points);
+    void            heal(int points);
+    void            destroy();
+    int             getHealthpoints() const;
+    virtual bool    isDestroyed() const;
+    virtual int     getAttackPower() const { return 0; }
+    bool            isKnocked() const;
 
     Direction   getDirection() const;
     virtual void setDirection(Direction dir);
@@ -39,9 +40,16 @@ public:
     void        unknock();
 
     void        playLocalSound(CommandQueue& commands, Sounds::ID sound);
+    void        applyPhysics(sf::Time dt, float gravity, sf::RenderWindow& window);
 
 protected:
-    virtual void    updateCurrent(sf::Time dt);
+    virtual void    updateCurrent(sf::Time dt, CommandQueue &commands);
+    virtual void    updatePhysics(sf::Time dt);
+
+public:
+    // Physic state
+    bool        mIsJumping;
+    float       mVerticalVelocity;
 
 protected:
     float       mHorizontalVelocity;

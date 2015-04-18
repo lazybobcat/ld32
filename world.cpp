@@ -55,7 +55,8 @@ void World::buildScene()
     // Initialize layers
     for(std::size_t i = 0; i < LayerCount; ++i)
     {
-        SceneNode::Ptr layer(new SceneNode());
+        Category::Type cat = ((i == Foreground) ? Category::Foreground : Category::None);
+        SceneNode::Ptr layer(new SceneNode(cat));
         mSceneLayers[i] = layer.get();
 
         mSceneGraph.attachChild(std::move(layer));
@@ -102,7 +103,24 @@ void World::buildScene()
 
 void World::update(sf::Time dt)
 {
+    float gravity = 1000.f;
+
     // Game logic here
+    Command gravity_player;
+    gravity_player.action = derivedAction<Player>([&](Player& player, sf::Time dt) {
+        player.applyPhysics(dt, gravity, mWindow);
+    });
+    gravity_player.category = Category::Player;
+    mCommandQueue.push(gravity_player);
+
+    Command gravity_unicorn;
+    gravity_unicorn.action = derivedAction<Unicorn>([&](Unicorn& unicorn, sf::Time dt) {
+        if(!unicorn.isTraveling()) unicorn.applyPhysics(dt, gravity, mWindow);
+    });
+    gravity_unicorn.category = Category::Unicorn;
+    mCommandQueue.push(gravity_unicorn);
+
+
 
     // Forward commands to scene
     while(!mCommandQueue.isEmpty())
@@ -110,36 +128,12 @@ void World::update(sf::Time dt)
         mSceneGraph.onCommand(mCommandQueue.pop(), dt);
     }
 
-    // Dirty : applying gravity and bounds here
-    if(mPlayerEntity)
-    {
-        float delta = 1000*dt.asSeconds();
-        mPlayerEntity->mVerticalVelocity += delta;
-        if(mPlayerEntity->mVerticalVelocity >= (delta * 1.25f)) // <==> If falling for more than 0.25sec
-        {
-            mPlayerEntity->mIsJumping = true;
-        }
-
-        sf::Vector2f pos = mPlayerEntity->getPosition();
-
-        if(pos.x < 0)
-        {
-            pos.x = 0;
-        }
-        else if(pos.x > mWindow.getSize().x)
-        {
-            pos.x = mWindow.getSize().x;
-        }
-
-        mPlayerEntity->setPosition(pos);
-    }
-
     // Handle collisions
     handleCollisions();
 
     // Set the listener position
 
-    mSceneGraph.update(dt);
+    mSceneGraph.update(dt, mCommandQueue);
 }
 
 void World::handleCollisions()
@@ -164,6 +158,31 @@ void World::handleCollisions()
             sf::Vector2f pos = player.getPosition();
             pos.y = platform.getPosition().y;
             player.setPosition(pos);
+        }
+        else if (matchesCategories(pair, Category::Unicorn, Category::Platform))
+        {
+            auto& unicorn = static_cast<Unicorn&>(*pair.first);
+            auto& platform = static_cast<Platform&>(*pair.second);
+
+            if(!unicorn.isTraveling())
+            {
+                unicorn.mIsJumping = false;
+                unicorn.mVerticalVelocity = 0.f;
+                sf::Vector2f pos = unicorn.getPosition();
+                pos.y = platform.getPosition().y;
+                unicorn.setPosition(pos);
+            }
+        }
+        else if (matchesCategories(pair, Category::Player, Category::Unicorn))
+        {
+            auto& player = static_cast<Player&>(*pair.first);
+            auto& unicorn = static_cast<Unicorn&>(*pair.second);
+
+            if(!unicorn.isDestroyed() && !unicorn.isTraveling())
+            {
+                player.retrieve();
+                unicorn.retrieve();
+            }
         }
     }
 }

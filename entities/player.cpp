@@ -1,15 +1,16 @@
 #include "player.h"
 #include <world.h>
 #include <controllers/playercontroller.h>
+#include <entities/unicorn.h>
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <iostream>
 
 Player::Player(TextureHolder &textures) :
     Entity(100),
+    mTextures(textures),
     mMovingAnimation(false),
-    mIsJumping(true),
-    mVerticalVelocity(0.f),
+    mIsFiring(false),
     mFired(false)
 {
     textures.get(Textures::Hero).setSmooth(false);
@@ -70,12 +71,16 @@ void Player::jump()
 
 void Player::fire(std::vector<sf::Vector2f>& path)
 {
-    // TODO
-    std::cout << "Firing debug: " << std::endl;
-    for(sf::Vector2f& p : path)
-    {
-        std::cout << '\t' << p.x << ":" << p.y << std::endl;
-    }
+    if(mFired || path.size() < 2) return;
+
+    mFirePath = path;
+    mIsFiring = true;
+}
+
+void Player::retrieve()
+{
+    mFired = false;
+    mFirePath.clear();
 }
 
 
@@ -101,18 +106,27 @@ void Player::setDirection(Direction dir)
     Entity::setDirection(dir);
 }
 
-void Player::updateCurrent(sf::Time dt)
+void Player::updateCurrent(sf::Time dt, CommandQueue &commands)
 {
-    sf::Vector2f pos = getPosition();
-    pos.y = pos.y + mVerticalVelocity * dt.asSeconds();
-    setPosition(pos);
-
     // Update animations
     updateAnimation(dt);
 
-    //
+    // Is firing ?
+    if(mIsFiring && !mFired)
+    {
+        Command command;
+        command.category = Category::Foreground;
+        command.action = derivedAction<SceneNode>([&](SceneNode& node, sf::Time) {
+            std::unique_ptr<Unicorn> unicorn(new Unicorn(mFirePath, mTextures));
+            node.attachChild(std::move(unicorn));
+        });
+        commands.push(command);
 
-    Entity::updateCurrent(dt);
+        mIsFiring = false;
+        mFired    = true;
+    }
+
+    Entity::updateCurrent(dt, commands);
 }
 
 void Player::updateAnimation(sf::Time dt)

@@ -1,17 +1,5 @@
 #include "unicornpathqueue.h"
-
-#include <iostream>
-
-
-////////////////////////////////////////////////////////////
-
-float distance(const sf::Vector2f &lhs, const sf::Vector2f &rhs)
-{
-    return length(lhs - rhs);
-}
-
-////////////////////////////////////////////////////////////
-
+#include <utils.h>
 
 UnicornPathQueue::UnicornPathQueue(Player *player) :
     SceneNode(Category::UnicornPath),
@@ -30,7 +18,7 @@ std::vector<sf::Vector2f>& UnicornPathQueue::addPoint(sf::Vector2f point)
         auto ppos = mPlayer->getPosition();
         ppos.y -= 25.f;
 
-        if(distance(ppos, point) > mPointsSpace)
+        if(distance(ppos, point) > mPointsSpace * 2.25f)
         {
             return mPoints;
         }
@@ -72,7 +60,7 @@ void UnicornPathQueue::drawCurrent(sf::RenderTarget &target, sf::RenderStates /*
     for(std::size_t i = 0; i < mPoints.size(); ++i)
     {
         lines[i].position = mPoints[i];
-        lines[i].color = sf::Color(255,0,0, 125);
+        lines[i].color = sf::Color(0,0,0, 255);
     }
     target.draw(lines);
 }

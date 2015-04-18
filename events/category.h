@@ -13,6 +13,7 @@ namespace Category
         Player          = 1 << 4,
         Unicorn         = 1 << 5,
         UnicornPath     = 1 << 6,
+        Foreground      = 1 << 7,
         // ...
         //MixedCategory        = Category1 | Category2,
 
