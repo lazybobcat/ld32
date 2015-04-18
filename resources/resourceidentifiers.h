@@ -21,7 +21,13 @@ namespace Textures
 {
     enum ID
     {
-        Particle
+        Particle,
+        Background,
+        Hero,
+        Platforms,
+        Unicorn,
+        Zombies,
+        Cursor
     };
 }
 
@@ -33,7 +39,8 @@ namespace Fonts
 {
     enum ID
     {
-        Main
+        Main,
+        Savage
     };
 }
 

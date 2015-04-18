@@ -7,7 +7,7 @@ TitleState::TitleState(StateStack &stack, Context context) :
     mShowText(true),
     mTextEffectTime(sf::Time::Zero)
 {
-    mText.setFont(context.fonts->get(Fonts::Main));
+    mText.setFont(context.fonts->get(Fonts::Savage));
     mText.setString("Welcome on Potato Framework ! Press any key to quit !");
     centerOrigin(mText);
     mText.setPosition(context.window->getView().getSize() / 2.f);
@@ -41,6 +41,7 @@ bool TitleState::handleEvent(const sf::Event& event)
     if (event.type == sf::Event::KeyReleased)
     {
         requestStackPop();
+        requestStackPush(States::Game);
     }
 
     return true;

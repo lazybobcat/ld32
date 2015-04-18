@@ -35,6 +35,9 @@ private:
 
     StateStack              mStateStack;
 
+    // Cursor
+    sf::Sprite              mCursor;
+
     // Statistics
     sf::Text				mStatisticsText;
     sf::Time				mStatisticsUpdateTime;

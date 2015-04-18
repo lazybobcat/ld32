@@ -1,6 +1,7 @@
 #include <application.h>
 #include <utils.h>
 #include <states/titlestate.h>
+#include <states/gamestate.h>
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
@@ -18,11 +19,22 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mStatisticsNumFrames(0)
 {
     mWindow.setKeyRepeatEnabled(false);
+    mWindow.setMouseCursorVisible(false);
 
     // Resources
-    mFonts.load(Fonts::Main, "assets/fonts/sansation.ttf");
-    mTextures.load(Textures::Particle, "assets/textures/particle.png");
+    mFonts.load(Fonts::Main, "assets/fonts/HandTIMES.ttf");
+    mFonts.load(Fonts::Savage, "assets/fonts/savage.ttf");
+    mTextures.load(Textures::Particle,      "assets/textures/particle.png");
+    mTextures.load(Textures::Background,    "assets/textures/background.png");
+    mTextures.load(Textures::Hero,          "assets/textures/hero.png");
+    mTextures.load(Textures::Platforms,     "assets/textures/platforms.png");
+    mTextures.load(Textures::Unicorn,       "assets/textures/unicorn.png");
+    mTextures.load(Textures::Zombies,       "assets/textures/zombies.png");
+    mTextures.load(Textures::Cursor,        "assets/textures/unicorn_cursor.png");
     mScripts.registerFile(Scripts::HelloWorld, "assets/scripts/helloworld.lua");
+
+
+    mCursor.setTexture(mTextures.get(Textures::Cursor));
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setPosition(5.f,5.f);
@@ -40,6 +52,9 @@ void Application::run()
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     while(mWindow.isOpen())
     {
+        sf::Vector2i mp = sf::Mouse::getPosition(mWindow);
+        mCursor.setPosition(sf::Vector2f(mp.x * 1.f, mp.y * 1.f));
+
         sf::Time elapsedTime = clock.restart();
         timeSinceLastUpdate += elapsedTime;
         while(timeSinceLastUpdate > TimePerFrame)
@@ -80,6 +95,7 @@ void Application::render()
     mWindow.clear();
     mStateStack.draw();
 
+    mWindow.draw(mCursor);
     mWindow.setView(mWindow.getDefaultView());
     mWindow.draw(mStatisticsText);
     mWindow.display();
@@ -88,8 +104,8 @@ void Application::render()
 void Application::registerStates()
 {
     mStateStack.registerState<TitleState>(States::Title);
-    /*mStateStack.registerState<MenuState>(States::Menu);
     mStateStack.registerState<GameState>(States::Game);
+    /*mStateStack.registerState<MenuState>(States::Menu);
     mStateStack.registerState<PauseState>(States::Pause);
     mStateStack.registerState<LoadingState>(States::Loading);
     mStateStack.registerState<GameOverState>(States::GameOver);*/

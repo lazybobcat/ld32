@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <vector>
+#include <set>
 #include <memory>
 #include <cassert>
 
@@ -14,6 +15,7 @@ class SceneNode : public sf::Transformable, public sf::Drawable, private sf::Non
 {
 public:
     typedef std::unique_ptr<SceneNode> Ptr;
+    typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 public:
     explicit SceneNode(Category::Type category = Category::None);
@@ -23,7 +25,10 @@ public:
 
     void                    update(sf::Time dt);
 
+    virtual bool            isDestroyed() const {return false; }
     virtual bool            isCollidable() const;
+    void                    checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs);
+    void                    checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs);
 
     sf::Transform           getWorldTransform() const;
     sf::Vector2f            getWorldPosition() const;

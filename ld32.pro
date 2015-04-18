@@ -42,7 +42,10 @@ SOURCES += main.cpp \
     datatables.cpp \
     utils.cpp \
     utils.inl \
-    world.cpp
+    world.cpp \
+    states/gamestate.cpp \
+    entities/platform.cpp \
+    entities/player.cpp
 
 OTHER_FILES +=
 
@@ -80,6 +83,9 @@ HEADERS += \
     application.h \
     datatables.h \
     utils.h \
-    world.h
+    world.h \
+    states/gamestate.h \
+    entities/platform.h \
+    entities/player.h
 
 

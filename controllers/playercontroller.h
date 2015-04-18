@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLAYER_CONTROLLER_H
+#define PLAYER_CONTROLLER_H
 
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
@@ -18,8 +18,8 @@ public:
         // Player Actions here...
         MoveLeft,
         MoveRight,
-        MoveUp,
-        MoveDown,
+        Jump,
+        Fire,
         // Fire ? LaunchMissile ? Jump ? ...
         ActionCount
     };
@@ -42,4 +42,4 @@ private:
     std::map<Action, Command>				mActionBinding;
 };
 
-#endif // PLAYER_H
+#endif // PLAYER_CONTROLLER_H

@@ -15,6 +15,8 @@
 #include <events/category.h>
 #include <events/commandqueue.h>
 #include <entities/spritenode.h>
+#include <entities/platform.h>
+#include <entities/player.h>
 
 class World : public sf::NonCopyable
 {
@@ -29,6 +31,7 @@ public:
 private:
     void        loadTextures();
     void        buildScene();
+    void        handleCollisions();
 
 private:
     enum Layer
@@ -53,6 +56,7 @@ private:
     CommandQueue                        mCommandQueue;
 
     // Player
+    Player*                             mPlayerEntity;
 };
 
 #endif // WORLD_H

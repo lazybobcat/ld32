@@ -11,8 +11,8 @@ Animation::Animation() :
 {
 }
 
-Animation::Animation(const sf::Texture &texture) :
-    mSprite(texture),
+Animation::Animation(const sf::Texture &texture, const sf::IntRect &textureRect) :
+    mSprite(texture, textureRect),
     mFrameSize(),
     mNumFrames(0),
     mCurrentFrame(0),
@@ -23,9 +23,10 @@ Animation::Animation(const sf::Texture &texture) :
 }
 
 
-void Animation::setTexture(const sf::Texture &texture)
+void Animation::setTexture(const sf::Texture &texture, const sf::IntRect &textureRect)
 {
     mSprite.setTexture(texture);
+    mSprite.setTextureRect(textureRect);
 }
 
 const sf::Texture* Animation::getTexture() const

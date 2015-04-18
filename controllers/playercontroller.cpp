@@ -1,13 +1,20 @@
 #include <controllers/playercontroller.h>
 #include <events/commandqueue.h>
+#include <entities/player.h>
 
 PlayerController::PlayerController()
 {
     // Default keybindings
     mKeyBinding[sf::Keyboard::Left] = MoveLeft;
+    mKeyBinding[sf::Keyboard::Q] = MoveLeft;
+    mKeyBinding[sf::Keyboard::A] = MoveLeft;
     mKeyBinding[sf::Keyboard::Right] = MoveRight;
-    mKeyBinding[sf::Keyboard::Up] = MoveUp;
-    mKeyBinding[sf::Keyboard::Down] = MoveDown;
+    mKeyBinding[sf::Keyboard::D] = MoveRight;
+    mKeyBinding[sf::Keyboard::E] = MoveRight;
+    mKeyBinding[sf::Keyboard::Up] = Jump;
+    mKeyBinding[sf::Keyboard::Z] = Jump;
+    mKeyBinding[sf::Keyboard::W] = Jump;
+    mKeyBinding[sf::Keyboard::Space] = Jump;
 
     // initialize actions
     initializeActions();
@@ -63,8 +70,20 @@ sf::Keyboard::Key PlayerController::getAssignedKey(Action action) const
 
 void PlayerController::initializeActions()
 {
-    //mActionBinding[MoveLeft].action = derivedAction< [Player Entity Class here] >( [Command Here] );
-    //mActionBinding[MoveLeft].category = Category::None;
+    mActionBinding[MoveLeft].action = derivedAction< Player >([](Player& player, sf::Time) {
+        player.move(Entity::Left);
+    });
+    mActionBinding[MoveLeft].category = Category::Player;
+
+    mActionBinding[MoveRight].action = derivedAction< Player >([](Player& player, sf::Time) {
+        player.move(Entity::Right);
+    });
+    mActionBinding[MoveRight].category = Category::Player;
+
+    mActionBinding[Jump].action = derivedAction< Player >([](Player& player, sf::Time) {
+        player.jump();
+    });
+    mActionBinding[Jump].category = Category::Player;
 
     // ...
 }
@@ -75,8 +94,6 @@ bool PlayerController::isRealtimeAction(Action action)
     {
         case MoveLeft:
         case MoveRight:
-        case MoveDown:
-        case MoveUp:
             return true;
 
         default:
