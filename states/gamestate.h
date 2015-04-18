@@ -15,8 +15,8 @@ public:
     virtual bool handleEvent(const sf::Event &event);
 
 private:
-    World            mWorld;
-    PlayerController mPlayer;
+    PlayerController& mPlayer;
+    World             mWorld;
 };
 
 #endif // GAMESTATE_H

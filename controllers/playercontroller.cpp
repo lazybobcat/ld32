@@ -1,8 +1,10 @@
 #include <controllers/playercontroller.h>
 #include <events/commandqueue.h>
 #include <entities/player.h>
+#include <entities/unicornpathqueue.h>
 
-PlayerController::PlayerController()
+PlayerController::PlayerController(sf::RenderWindow &window) :
+    mWindow(window)
 {
     // Default keybindings
     mKeyBinding[sf::Keyboard::Left] = MoveLeft;
@@ -22,12 +24,17 @@ PlayerController::PlayerController()
 
 void PlayerController::handleEvent(const sf::Event &event, CommandQueue &commands)
 {
-    if (event.type == sf::Event::KeyPressed)
+    if(event.type == sf::Event::KeyPressed)
     {
         // Check if pressed key appears in key binding, trigger command if so
         auto found = mKeyBinding.find(event.key.code);
         if (found != mKeyBinding.end() && !isRealtimeAction(found->second))
             commands.push(mActionBinding[found->second]);
+    }
+    else if(event.type == sf::Event::MouseButtonReleased || event.type == sf::Event::LostFocus)
+    {
+        commands.push(mActionBinding[Fire]);
+        commands.push(mActionBinding[FirePathClear]);
     }
 }
 
@@ -40,6 +47,12 @@ void PlayerController::handleRealtimeInput(CommandQueue &commands)
             commands.push(mActionBinding[pair.second]);
         }
     }
+
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right))
+    {
+        commands.push(mActionBinding[FirePath]);
+    }
+
 }
 
 void PlayerController::assignKey(Action action, sf::Keyboard::Key key)
@@ -85,7 +98,24 @@ void PlayerController::initializeActions()
     });
     mActionBinding[Jump].category = Category::Player;
 
-    // ...
+    //
+
+    mActionBinding[FirePath].action = derivedAction< UnicornPathQueue >([&](UnicornPathQueue& path, sf::Time) {
+        sf::Vector2i mpos = sf::Mouse::getPosition(mWindow);
+        mFirePath = path.addPoint(sf::Vector2f(mpos.x * 1.f, mpos.y * 1.f));
+    });
+    mActionBinding[FirePath].category = Category::UnicornPath;
+
+    mActionBinding[FirePathClear].action = derivedAction< UnicornPathQueue >([&](UnicornPathQueue& path, sf::Time) {
+        path.clear();
+        mFirePath.clear();
+    });
+    mActionBinding[FirePathClear].category = Category::UnicornPath;
+
+    mActionBinding[Fire].action = derivedAction< Player >([&](Player& player, sf::Time) {
+        player.fire(mFirePath);
+    });
+    mActionBinding[Fire].category = Category::Player;
 }
 
 bool PlayerController::isRealtimeAction(Action action)

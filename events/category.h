@@ -12,6 +12,7 @@ namespace Category
         Enemy           = 1 << 3,
         Player          = 1 << 4,
         Unicorn         = 1 << 5,
+        UnicornPath     = 1 << 6,
         // ...
         //MixedCategory        = Category1 | Category2,
 

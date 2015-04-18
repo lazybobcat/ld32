@@ -26,9 +26,11 @@ public:
     Player(TextureHolder& textures);
 
     void        jump();
+    void        fire(std::vector<sf::Vector2f>& path);
 
     virtual bool isCollidable() const { return true; }
     virtual int getAttackPower() const { return 0; }
+    virtual void setDirection(Direction dir);
 
     virtual sf::FloatRect   getBoundingRect() const;
     virtual unsigned int    getCategory() const { return Category::Player; }
@@ -37,12 +39,15 @@ public:
 protected:
     virtual void updateCurrent(sf::Time dt);
     virtual void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const;
+    void         updateAnimation(sf::Time dt);
 
 private:
-    sf::Sprite  mStandingSprite;
+    sf::Sprite  mStandingWithSprite;
+    sf::Sprite  mStandingWithoutSprite;
     std::array<Animation, 4> mAnimations;
     sf::Sprite  mDeadWithoutSprite;
     sf::Sprite  mDeadWithSprite;
+    bool        mMovingAnimation;
 
     // Physic state
     bool        mIsJumping;

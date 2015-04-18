@@ -2,6 +2,7 @@
 
 GameState::GameState(StateStack &stack, Context context) :
     State(stack, context),
+    mPlayer(*context.player),
     mWorld(*context.window, *context.textures, *context.fonts, *context.music, *context.sounds, *context.scripts, mPlayer)
 {
    // context.music->play(Musics::MainTheme);

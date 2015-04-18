@@ -89,7 +89,11 @@ void World::buildScene()
     player->setPosition(640, 475);
     player->setOrigin(75, 150);
     mPlayerEntity = player.get();
+    // Adding Unicorn Path Queue
+    std::unique_ptr<UnicornPathQueue> path(new UnicornPathQueue(mPlayerEntity));
+    mSceneLayers[Foreground]->attachChild(std::move(path));
     mSceneLayers[Foreground]->attachChild(std::move(player));
+
 
     // Ennemies
 
@@ -109,7 +113,13 @@ void World::update(sf::Time dt)
     // Dirty : applying gravity and bounds here
     if(mPlayerEntity)
     {
-        mPlayerEntity->mVerticalVelocity += 1000*dt.asSeconds();
+        float delta = 1000*dt.asSeconds();
+        mPlayerEntity->mVerticalVelocity += delta;
+        if(mPlayerEntity->mVerticalVelocity >= (delta * 1.25f)) // <==> If falling for more than 0.25sec
+        {
+            mPlayerEntity->mIsJumping = true;
+        }
+
         sf::Vector2f pos = mPlayerEntity->getPosition();
 
         if(pos.x < 0)

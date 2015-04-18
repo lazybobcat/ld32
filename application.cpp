@@ -12,7 +12,7 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mSounds(),
     mMusic(),
     mScripts(),
-    mPlayer(),
+    mPlayer(mWindow),
     mStateStack(State::Context(mWindow, mTextures, mFonts, mSounds, mMusic, mScripts, mPlayer)),
     mStatisticsText(),
     mStatisticsUpdateTime(),
@@ -27,6 +27,10 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mTextures.load(Textures::Particle,      "assets/textures/particle.png");
     mTextures.load(Textures::Background,    "assets/textures/background.png");
     mTextures.load(Textures::Hero,          "assets/textures/hero.png");
+    mTextures.load(Textures::HeroWalkingWith,"assets/textures/hero-walkingwith.png");
+    mTextures.load(Textures::HeroWalkingWithout,"assets/textures/hero-walkingwithout.png");
+    mTextures.load(Textures::HeroJumpingWith,"assets/textures/hero-jumpingwith.png");
+    mTextures.load(Textures::HeroJumpingWithout,"assets/textures/hero-jumpingwithout.png");
     mTextures.load(Textures::Platforms,     "assets/textures/platforms.png");
     mTextures.load(Textures::Unicorn,       "assets/textures/unicorn.png");
     mTextures.load(Textures::Zombies,       "assets/textures/zombies.png");

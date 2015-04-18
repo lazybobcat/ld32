@@ -17,6 +17,7 @@
 #include <entities/spritenode.h>
 #include <entities/platform.h>
 #include <entities/player.h>
+#include <entities/unicornpathqueue.h>
 
 class World : public sf::NonCopyable
 {

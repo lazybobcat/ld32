@@ -3,26 +3,56 @@
 #include <controllers/playercontroller.h>
 
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <iostream>
 
 Player::Player(TextureHolder &textures) :
     Entity(100),
+    mMovingAnimation(false),
     mIsJumping(true),
     mVerticalVelocity(0.f),
     mFired(false)
 {
     textures.get(Textures::Hero).setSmooth(false);
 
-    mStandingSprite.setTexture(textures.get(Textures::Hero));
-    mStandingSprite.setTextureRect(sf::IntRect(0,0,75,75));
-    mStandingSprite.setScale(2.f, 2.f);
+    mStandingWithoutSprite.setTexture(textures.get(Textures::Hero));
+    mStandingWithoutSprite.setTextureRect(sf::IntRect(0,0,75,75));
+    mStandingWithoutSprite.setScale(2.f, 2.f);
 
-    mAnimations[WalkingWith].setTexture(textures.get(Textures::Hero));
-    mAnimations[WalkingWith].setFrameSize(sf::Vector2i(64,64));
+    mStandingWithSprite.setTexture(textures.get(Textures::Hero));
+    mStandingWithSprite.setTextureRect(sf::IntRect(0,75,75,75));
+    mStandingWithSprite.setScale(2.f, 2.f);
+
+    //
+
+    mAnimations[WalkingWithout].setTexture(textures.get(Textures::HeroWalkingWithout));
+    mAnimations[WalkingWithout].setFrameSize(sf::Vector2i(75,75));
+    mAnimations[WalkingWithout].setNumFrames(4);
+    mAnimations[WalkingWithout].setDuration(sf::seconds(0.7f));
+    mAnimations[WalkingWithout].setRepeating(true);
+    mAnimations[WalkingWithout].setScale(sf::Vector2f(2.f, 2.f));
+
+    mAnimations[WalkingWith].setTexture(textures.get(Textures::HeroWalkingWith));
+    mAnimations[WalkingWith].setFrameSize(sf::Vector2i(75,75));
     mAnimations[WalkingWith].setNumFrames(4);
     mAnimations[WalkingWith].setDuration(sf::seconds(0.7f));
     mAnimations[WalkingWith].setRepeating(true);
-    mAnimations[WalkingWith].setOrigin(sf::Vector2f(32.f, 64.f));
-    mAnimations[WalkingWith].setScale(sf::Vector2f(4.f, 4.f));
+    mAnimations[WalkingWith].setScale(sf::Vector2f(2.f, 2.f));
+
+    //
+
+    mAnimations[JumpingWithout].setTexture(textures.get(Textures::HeroJumpingWithout));
+    mAnimations[JumpingWithout].setFrameSize(sf::Vector2i(75,75));
+    mAnimations[JumpingWithout].setNumFrames(2);
+    mAnimations[JumpingWithout].setDuration(sf::seconds(0.7f));
+    mAnimations[JumpingWithout].setRepeating(true);
+    mAnimations[JumpingWithout].setScale(sf::Vector2f(2.f, 2.f));
+
+    mAnimations[JumpingWith].setTexture(textures.get(Textures::HeroJumpingWith));
+    mAnimations[JumpingWith].setFrameSize(sf::Vector2i(75,75));
+    mAnimations[JumpingWith].setNumFrames(2);
+    mAnimations[JumpingWith].setDuration(sf::seconds(0.7f));
+    mAnimations[JumpingWith].setRepeating(true);
+    mAnimations[JumpingWith].setScale(sf::Vector2f(2.f, 2.f));
 }
 
 
@@ -38,30 +68,113 @@ void Player::jump()
     }
 }
 
+void Player::fire(std::vector<sf::Vector2f>& path)
+{
+    // TODO
+    std::cout << "Firing debug: " << std::endl;
+    for(sf::Vector2f& p : path)
+    {
+        std::cout << '\t' << p.x << ":" << p.y << std::endl;
+    }
+}
+
 
 sf::FloatRect Player::getBoundingRect() const
 {
     return getWorldTransform().transformRect(sf::FloatRect(30.f*2, 65.f*2, 15.f*2, 10.f*2));
 }
 
+void Player::setDirection(Direction dir)
+{
+    switch(dir)
+    {
+        case Left:
+            setScale(-1.f, 1.f);
+            break;
+
+        case Right:
+        default:
+            setScale(1.f, 1.f);
+            break;
+    }
+
+    Entity::setDirection(dir);
+}
+
 void Player::updateCurrent(sf::Time dt)
 {
-    Entity::updateCurrent(dt);
-
     sf::Vector2f pos = getPosition();
     pos.y = pos.y + mVerticalVelocity * dt.asSeconds();
     setPosition(pos);
+
+    // Update animations
+    updateAnimation(dt);
+
+    //
+
+    Entity::updateCurrent(dt);
+}
+
+void Player::updateAnimation(sf::Time dt)
+{
+    if(!isDestroyed())
+    {
+        if(mFired)
+        {
+            if(mIsJumping)
+            {
+                mAnimations[JumpingWithout].update(dt);
+            }
+            else
+            {
+                mAnimations[WalkingWithout].update(dt);
+            }
+        }
+        else
+        {
+            if(mIsJumping)
+            {
+                mAnimations[JumpingWith].update(dt);
+            }
+            else
+            {
+                mAnimations[WalkingWith].update(dt);
+            }
+        }
+    }
+
+    mMovingAnimation = isMoving();
 }
 
 void Player::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
+    if(mIsJumping)
+    {
+        if(mFired)
+            target.draw(mAnimations[JumpingWithout], states);
+        else
+            target.draw(mAnimations[JumpingWith], states);
+    }
+    else if(mMovingAnimation)
+    {
+        if(mFired)
+            target.draw(mAnimations[WalkingWithout], states);
+        else
+            target.draw(mAnimations[WalkingWith], states);
+    }
+    else
+    {
+        if(mFired)
+            target.draw(mStandingWithoutSprite, states);
+        else
+            target.draw(mStandingWithSprite, states);
+    }
 
-    sf::FloatRect bound(30.f*2, 65.f*2, 15.f*2, 10.f*2);
+    /*sf::FloatRect bound(30.f*2, 65.f*2, 15.f*2, 10.f*2);
     sf::RectangleShape shape(sf::Vector2f(bound.width, bound.height));
     shape.setOutlineColor(sf::Color::Red);
     shape.setOutlineThickness(1.f);
     shape.setFillColor(sf::Color(255,255,255, 0));
     shape.setPosition(bound.left, bound.top);
-    target.draw(shape, states);
+    target.draw(shape, states);*/
 }
