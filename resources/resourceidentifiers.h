@@ -33,7 +33,8 @@ namespace Textures
         ZombieWalking,
         ZombieAttacking,
         ZombieDying,
-        Cursor
+        Cursor,
+        Pvbar
     };
 }
 

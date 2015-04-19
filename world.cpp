@@ -113,9 +113,12 @@ void World::buildScene()
 
 
     // UI
+    std::unique_ptr<Uihealthpoints> php(new Uihealthpoints(mTextures, *mPlayerEntity));
+    php->setPosition(40, (int)mWindow.getSize().y - 35);
+    mSceneLayers[UI]->attachChild(std::move(php));
+
     std::unique_ptr<TextNode> score(new TextNode("Score: " + toString(mPoints), mFonts, 30));
     score->setPosition(1200-90, (int)mWindow.getSize().y - 23);
-    score->setScale(sf::Vector2f(1.f, 1.f));
     mPointsText = score.get();
     mSceneLayers[UI]->attachChild(std::move(score));
 }

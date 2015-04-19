@@ -18,6 +18,7 @@
 #include <entities/cameranode.h>
 #include <entities/spritenode.h>
 #include <entities/textnode.h>
+#include <entities/uihealthpoints.h>
 #include <entities/platform.h>
 #include <entities/player.h>
 #include <entities/unicorn.h>
