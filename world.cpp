@@ -1,6 +1,6 @@
 #include <world.h>
 #include <algorithm>
-
+#include <cmath>
 #include <iostream>
 
 ////////////////////////////////////////////////////
@@ -38,6 +38,7 @@ World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &font
     mSceneGraph(),
     mSceneLayers(),
     mPlayerEntity(nullptr),
+    mBossKilled(0),
     mAIController(),
     mPoints(0),
     mPointsText(nullptr)
@@ -297,7 +298,7 @@ void World::handleCollisions()
 
             if(unicorn.isTraveling())
             {
-                if(!zombie.isKnocked())
+                if(!zombie.isKnocked() && !zombie.isDying())
                 {
                     int life = zombie.getHealthpoints();
                     zombie.damage(unicorn.getAttackPower());
@@ -312,6 +313,16 @@ void World::handleCollisions()
                     if(zombie.getHealthpoints() <= 0)
                     {
                         mPoints += zombie.getMaxHealthpoints();
+                        if(zombie.isBoss())
+                        {
+                            mBossKilled++;
+                            int spawnNb = std::ceil(mBossKilled/2.f);
+                            std::cout << "Spwn: " << spawnNb << std::endl;
+                            for(unsigned int i = 0; i < spawnNb; ++i)
+                            {
+                                addBoss(Boss::Boss1, sf::Vector2f((i%2==0) ? 10.f : 1270.f, 680.f));
+                            }
+                        }
                     }
                 }
             }
@@ -369,7 +380,7 @@ void World::handleCollisions()
             auto& player = static_cast<Player&>(*pair.first);
             auto& zombie = static_cast<Creature&>(*pair.second);
 
-            if(!player.isDestroyed() && !zombie.isDestroyed() && zombie.isAttacking())
+            if(!player.isDestroyed() && !zombie.isDying() && zombie.isAttacking())
             {
                 if(!player.isKnocked() && !zombie.isKnocked())
                 {
@@ -450,7 +461,7 @@ void World::addBoss(Boss::Bosses type, sf::Vector2f pos)
     switch(type)
     {
         case Boss::Boss1:
-            b = new FirstBoss(*this, mAIController, 100, mTextures);
+            b = new FirstBoss(*this, mAIController, 40, mTextures);
             break;
 
         default:

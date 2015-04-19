@@ -45,6 +45,7 @@ public:
     void        splashBlood();
 
     Player*     getPlayerEntity() { return mPlayerEntity; }
+    unsigned int getScore() { return mPoints; }
 
     void        addZombie(sf::Vector2f pos);
     void        addBoss(Boss::Bosses type, sf::Vector2f pos);
@@ -84,6 +85,7 @@ private:
 
     // Enemies
     std::set<Entity*>                   mWaitingCreations;
+    unsigned int                        mBossKilled;
 
     // Controllers
     AIController                        mAIController;

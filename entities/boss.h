@@ -51,6 +51,7 @@ public:
     void    addPhase(Phase phase);
     virtual void sensible() {}
     virtual void unsensible() {}
+    virtual bool isBoss() const { return true; }
 
 protected:
     virtual void updateCurrent(sf::Time dt, CommandQueue &commands);

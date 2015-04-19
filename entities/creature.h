@@ -25,10 +25,12 @@ public:
     virtual void        damage(int points);
     virtual void        knock();
     virtual void        unknock();
+    bool                isDying() const { return mIsDying; }
     bool                isResting() const;
     virtual void        rest();
     virtual void        unrest();
     virtual bool        isAttacking() const { return mIsAttacking; }
+    virtual bool        isBoss() const { return false; }
 
     virtual unsigned int    getCategory() const { return Category::Enemy; }
 

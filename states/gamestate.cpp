@@ -1,4 +1,6 @@
 #include "gamestate.h"
+#include <iostream>
+#include <fstream>
 
 GameState::GameState(StateStack &stack, Context context) :
     State(stack, context),
@@ -30,6 +32,21 @@ bool GameState::update(sf::Time dt)
         if(!mIsGameOver)
         {
             mIsGameOver = true;
+            std::fstream rfile("assets/score.txt", std::ios_base::in);
+            if(rfile)
+            {
+                unsigned int bestScore;
+                rfile >> bestScore;
+                rfile.close();
+                if(mWorld.getScore() > bestScore)
+                {
+                    rfile.open("assets/score.txt", std::ios_base::out | std::ios_base::trunc);
+                    if(rfile)
+                    {
+                        rfile << mWorld.getScore();
+                    }
+                }
+            }
         }
 
         if(mGameOverTimer.asSeconds() >= 1.2f)

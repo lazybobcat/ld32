@@ -1,5 +1,8 @@
 #include <states/titlestate.h>
 #include <utils.h>
+#include <iostream>
+#include <fstream>
+
 
 TitleState::TitleState(StateStack &stack, Context context) :
     State(stack, context),
@@ -12,6 +15,20 @@ TitleState::TitleState(StateStack &stack, Context context) :
     mText.setCharacterSize(70);
     centerOrigin(mText);
     mText.setPosition(context.window->getView().getSize().x / 2.f, 50.f);
+
+    unsigned int bestScore = 0;
+    std::fstream rfile("assets/score.txt", std::ios_base::in);
+    if(rfile)
+    {
+        rfile >> bestScore;
+        rfile.close();
+    }
+
+    mScoreText.setFont(context.fonts->get(Fonts::Savage));
+    mText.setString("Best Score: "+toString(bestScore));
+    mText.setCharacterSize(30);
+    centerOrigin(mText);
+    mText.setPosition(context.window->getView().getSize().x / 2.f, context.window->getView().getSize().y - 23.f);
 
     context.music->play(Musics::MainThemeSinging);
     context.music->setLoop(false);
@@ -59,6 +76,10 @@ bool TitleState::handleEvent(const sf::Event& event)
             case sf::Keyboard::Return:
                 requestStackPop();
                 requestStackPush(States::Game);
+                break;
+
+            case sf::Keyboard::Escape:
+                requestStackClear();
                 break;
 
             default:break;

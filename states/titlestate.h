@@ -17,6 +17,7 @@ public:
 
 private:
     sf::Text            mText;
+    sf::Text            mScoreText;
 
     PlayerController&   mPlayer;
     World               mWorld;
