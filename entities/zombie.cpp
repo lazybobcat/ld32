@@ -77,7 +77,7 @@ void Zombie::unknock()
 
 bool Zombie::isDestroyed() const
 {
-    return mIsDying && mAnimations[Dying].isFinished() && mDepopTimer.asSeconds() >= 2.f;
+    return mIsDying && mAnimations[Dying].isFinished() && mDepopTimer.asSeconds() >= 120.f;
 }
 
 
