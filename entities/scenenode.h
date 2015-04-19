@@ -24,7 +24,9 @@ public:
     Ptr                     detachChild(const SceneNode& node);
 
     void                    update(sf::Time dt, CommandQueue& commands);
+    void                    removeWrecks();
 
+    virtual bool            isMarkedForRemoval() const;
     virtual bool            isDestroyed() const {return false; }
     virtual bool            isCollidable() const;
     void                    checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs);

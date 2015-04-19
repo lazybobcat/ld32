@@ -14,6 +14,7 @@ namespace Category
         Unicorn         = 1 << 5,
         UnicornPath     = 1 << 6,
         Foreground      = 1 << 7,
+        Camera          = 1 << 8
         // ...
         //MixedCategory        = Category1 | Category2,
 

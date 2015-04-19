@@ -24,6 +24,7 @@ public:
     void            damage(int points);
     void            heal(int points);
     void            destroy();
+    int             getMaxHealthpoints() const { return mMaxHealthpoints; }
     int             getHealthpoints() const;
     virtual bool    isDestroyed() const;
     virtual int     getAttackPower() const { return 0; }
@@ -54,6 +55,7 @@ public:
 protected:
     float       mHorizontalVelocity;
 
+    int         mMaxHealthpoints;
     int         mHealthpoints;
     sf::Time    mLastHurtTime;
     bool        mKnocked;

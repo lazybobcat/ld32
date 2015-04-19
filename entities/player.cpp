@@ -87,6 +87,10 @@ void Player::retrieve()
     mFirePath.clear();
 }
 
+void Player::setCanMove(bool b)
+{
+    mCanMove = b;
+}
 
 void Player::knock()
 {
@@ -98,6 +102,14 @@ void Player::unknock()
 {
     Entity::unknock();
     // Stop flash
+}
+
+void Player::move(Direction dir)
+{
+    if(mCanMove)
+    {
+        Entity::move(dir);
+    }
 }
 
 

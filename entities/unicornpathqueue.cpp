@@ -13,6 +13,8 @@ UnicornPathQueue::UnicornPathQueue(Player *player) :
 
 std::vector<sf::Vector2f>& UnicornPathQueue::addPoint(sf::Vector2f point)
 {
+    if(mPlayer && !mPlayer->canFire()) return mPoints;
+
     if(mPoints.size() == 0 && mPlayer)
     {
         auto ppos = mPlayer->getPosition();
@@ -36,6 +38,11 @@ std::vector<sf::Vector2f>& UnicornPathQueue::addPoint(sf::Vector2f point)
         {
             mPoints.push_back(point);
         }
+
+        if(mPlayer)
+        {
+            mPlayer->setCanMove(false);
+        }
     }
 
     return mPoints;
@@ -44,6 +51,11 @@ std::vector<sf::Vector2f>& UnicornPathQueue::addPoint(sf::Vector2f point)
 void UnicornPathQueue::clear()
 {
     mPoints.clear();
+
+    if(mPlayer)
+    {
+        mPlayer->setCanMove(true);
+    }
 }
 
 

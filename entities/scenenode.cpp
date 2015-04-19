@@ -114,6 +114,28 @@ unsigned int SceneNode::getCategory() const
     return mDefaultCategory;
 }
 
+void SceneNode::removeWrecks()
+{
+    auto wreckBegin = std::remove_if(
+        mChildren.begin(),
+        mChildren.end(),
+        [](Ptr& n){return n->isMarkedForRemoval();}
+    );
+
+    // ?
+    mChildren.erase(wreckBegin, mChildren.end());
+
+    for(Ptr& child : mChildren)
+    {
+        child->removeWrecks();
+    }
+}
+
+bool SceneNode::isMarkedForRemoval() const
+{
+    return isDestroyed();
+}
+
 bool SceneNode::isCollidable() const
 {
     return false;

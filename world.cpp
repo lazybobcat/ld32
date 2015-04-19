@@ -37,12 +37,20 @@ World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &font
     mPlayer(player),
     mSceneGraph(),
     mSceneLayers(),
-    mAIController()
+    mPlayerEntity(nullptr),
+    mAIController(),
+    mPoints(0),
+    mPointsText(nullptr)
 {
     loadTextures();
     buildScene();
 
     // Other things here, like setting the view center on the player, scores, etc...
+    std::unique_ptr<SoundNode> sound(new SoundNode(sounds));
+    mSceneGraph.attachChild(std::move(sound));
+
+    std::unique_ptr<CameraNode> camera(new CameraNode(mWorldView));
+    mSceneGraph.attachChild(std::move(camera));
 }
 
 
@@ -103,7 +111,13 @@ void World::buildScene()
     zombie1->setOrigin(75, 150);
     mSceneLayers[Foreground]->attachChild(std::move(zombie1));
 
-    // ...
+
+    // UI
+    std::unique_ptr<TextNode> score(new TextNode("Score: " + toString(mPoints), mFonts, 30));
+    score->setPosition(1200-90, (int)mWindow.getSize().y - 23);
+    score->setScale(sf::Vector2f(1.f, 1.f));
+    mPointsText = score.get();
+    mSceneLayers[UI]->attachChild(std::move(score));
 }
 
 void World::update(sf::Time dt)
@@ -142,6 +156,18 @@ void World::update(sf::Time dt)
 
     // Handle collisions
     handleCollisions();
+
+    //if(mPlayerEntity->isDestroyed()) return;
+
+
+    // Score
+    if(mPointsText)
+    {
+        mPointsText->setText("Score: " + toString(mPoints));
+    }
+
+    // Remove useless entities
+    mSceneGraph.removeWrecks();
 
     // Set the listener position
 
@@ -184,8 +210,17 @@ void World::handleCollisions()
 
             if(unicorn.isTraveling())
             {
-                zombie.damage(unicorn.getAttackPower());
-                zombie.knock();
+                if(!zombie.isKnocked())
+                {
+                    zombie.damage(unicorn.getAttackPower());
+                    zombie.knock();
+                    shakeCamera();
+
+                    if(zombie.getHealthpoints() <= 0)
+                    {
+                        mPoints += zombie.getMaxHealthpoints();
+                    }
+                }
             }
         }
         else if (matchesCategories(pair, Category::Unicorn, Category::Platform))
@@ -220,8 +255,12 @@ void World::handleCollisions()
 
             if(!player.isDestroyed() && !zombie.isDestroyed() && zombie.isAttacking())
             {
-                player.damage(zombie.getAttackPower());
-                player.knock();
+                if(!player.isKnocked())
+                {
+                    player.damage(zombie.getAttackPower());
+                    player.knock();
+                    splashBlood();
+                }
 
             }
         }
@@ -238,4 +277,36 @@ void World::draw()
 CommandQueue& World::getCommandQueue()
 {
     return mCommandQueue;
+}
+
+void World::shakeCamera()
+{
+    Command command;
+    command.category = Category::Camera;
+    command.action = derivedAction<CameraNode>([&](CameraNode& c, sf::Time) {
+        c.shake(sf::seconds(0.6f));
+    });
+    mCommandQueue.push(command);
+
+    sf::sleep(sf::milliseconds(40));
+}
+
+void World::shakeCameraFor(float time)
+{
+    Command command;
+    command.category = Category::Camera;
+    command.action = derivedAction<CameraNode>([=](CameraNode& c, sf::Time) {
+        c.shake(sf::seconds(time));
+    });
+    mCommandQueue.push(command);
+}
+
+void World::splashBlood()
+{
+    Command command;
+    command.category = Category::Camera;
+    command.action = derivedAction<CameraNode>([&](CameraNode& c, sf::Time) {
+        c.splash(sf::Color::Red);
+    });
+    mCommandQueue.push(command);
 }

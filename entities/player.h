@@ -6,6 +6,8 @@
 #include <array>
 #include <vector>
 
+#include <iostream>
+
 class World;
 class PlayerController;
 
@@ -28,9 +30,13 @@ public:
     void        jump();
     void        fire(std::vector<sf::Vector2f>& path);
     void        retrieve();
+    void        setCanMove(bool b);
 
     virtual void knock();
     virtual void unknock();
+    virtual void move(Direction dir);
+
+    bool        canFire() { return !mFired; }
 
     virtual bool isCollidable() const { return true; }
     virtual int  getAttackPower() const { return 0; }
@@ -38,6 +44,9 @@ public:
 
     virtual sf::FloatRect   getBoundingRect() const;
     virtual unsigned int    getCategory() const { return Category::Player; }
+
+    virtual bool isMarkedForRemoval() const { return false; }
+    //virtual bool isDestroyed();
 
 
 protected:
@@ -56,6 +65,7 @@ private:
     bool        mMovingAnimation;
 
     // Attacking state
+    bool        mCanMove;
     bool        mIsFiring;
     bool        mFired;
     std::vector<sf::Vector2f> mFirePath;

@@ -9,7 +9,7 @@ Unicorn::Unicorn(std::vector<sf::Vector2f> &path, TextureHolder &textures) :
     mPath(path),
     mIsTraveling(true),
     mSpeed(200.f),
-    mTravelTime(0.3f),
+    mTravelTime(0.15f),
     mTimeSinceLastPoint(sf::Time::Zero)
 {
     mSprite.setTexture(textures.get(Textures::Hero));
@@ -17,7 +17,7 @@ Unicorn::Unicorn(std::vector<sf::Vector2f> &path, TextureHolder &textures) :
 
     setOrigin(sf::Vector2f(35.f, 55.f));
 
-    if(mPath.size() > 2)
+    if(mPath.size() >= 2)
     {
         setPosition(mPath[0]);
         mPath.erase(mPath.begin());

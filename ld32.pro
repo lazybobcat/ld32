@@ -54,7 +54,8 @@ SOURCES += main.cpp \
     controllers/aicontroller.cpp \
     controllers/AIStates/movingbehavior.cpp \
     controllers/AIStates/attackingbehavior.cpp \
-    controllers/AIStates/waitingbehavior.cpp
+    controllers/AIStates/waitingbehavior.cpp \
+    entities/cameranode.cpp
 
 OTHER_FILES +=
 
@@ -104,6 +105,7 @@ HEADERS += \
     controllers/aicontroller.h \
     controllers/AIStates/movingbehavior.h \
     controllers/AIStates/attackingbehavior.h \
-    controllers/AIStates/waitingbehavior.h
+    controllers/AIStates/waitingbehavior.h \
+    entities/cameranode.h
 
 

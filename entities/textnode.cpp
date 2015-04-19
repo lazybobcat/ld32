@@ -1,8 +1,8 @@
 #include <entities/textnode.h>
 #include <utils.h>
 
-TextNode::TextNode(const std::string& text, const FontHolder& fonts) :
-    mText(text, fonts.get(Fonts::Main), 20)
+TextNode::TextNode(const std::string& text, const FontHolder& fonts, int fz) :
+    mText(text, fonts.get(Fonts::Main), fz)
 {
     centerOrigin(mText);
 }

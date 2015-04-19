@@ -10,7 +10,7 @@
 class TextNode : public SceneNode
 {
 public:
-    TextNode(const std::string& text, const FontHolder& fonts);
+    TextNode(const std::string& text, const FontHolder& fonts, int fz = 20);
 
     void            setText(const std::string& text);
 

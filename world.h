@@ -15,7 +15,9 @@
 #include <controllers/aicontroller.h>
 #include <events/category.h>
 #include <events/commandqueue.h>
+#include <entities/cameranode.h>
 #include <entities/spritenode.h>
+#include <entities/textnode.h>
 #include <entities/platform.h>
 #include <entities/player.h>
 #include <entities/unicorn.h>
@@ -32,6 +34,10 @@ public:
 
     CommandQueue&   getCommandQueue();
 
+    void        shakeCamera();
+    void        shakeCameraFor(float sec);
+    void        splashBlood();
+
 private:
     void        loadTextures();
     void        buildScene();
@@ -42,6 +48,7 @@ private:
     {
         Background,
         Foreground,
+        UI,
         LayerCount
     };
 
@@ -64,6 +71,8 @@ private:
 
     // Controllers
     AIController                        mAIController;
+    unsigned int                        mPoints;
+    TextNode*                           mPointsText;
 };
 
 #endif // WORLD_H

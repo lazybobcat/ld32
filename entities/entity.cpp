@@ -7,6 +7,7 @@ Entity::Entity(int healthpoints) :
     mIsJumping(false),
     mVerticalVelocity(0.f),
     mHorizontalVelocity(300.f),
+    mMaxHealthpoints(healthpoints),
     mHealthpoints(healthpoints),
     mLastHurtTime(sf::Time::Zero),
     mKnocked(false),
