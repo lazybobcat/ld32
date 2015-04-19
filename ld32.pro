@@ -50,7 +50,11 @@ SOURCES += main.cpp \
     entities/unicorn.cpp \
     entities/zombie.cpp \
     controllers/AIStates/aistate.cpp \
-    controllers/AIStates/aistatemachine.cpp
+    controllers/AIStates/aistatemachine.cpp \
+    controllers/aicontroller.cpp \
+    controllers/AIStates/movingbehavior.cpp \
+    controllers/AIStates/attackingbehavior.cpp \
+    controllers/AIStates/waitingbehavior.cpp
 
 OTHER_FILES +=
 
@@ -96,6 +100,10 @@ HEADERS += \
     entities/unicorn.h \
     entities/zombie.h \
     controllers/AIStates/aistate.h \
-    controllers/AIStates/aistatemachine.h
+    controllers/AIStates/aistatemachine.h \
+    controllers/aicontroller.h \
+    controllers/AIStates/movingbehavior.h \
+    controllers/AIStates/attackingbehavior.h \
+    controllers/AIStates/waitingbehavior.h
 
 

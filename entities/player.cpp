@@ -88,6 +88,19 @@ void Player::retrieve()
 }
 
 
+void Player::knock()
+{
+    Entity::knock();
+    // Flash screen in red
+}
+
+void Player::unknock()
+{
+    Entity::unknock();
+    // Stop flash
+}
+
+
 sf::FloatRect Player::getBoundingRect() const
 {
     return getWorldTransform().transformRect(sf::FloatRect(30.f*2, 65.f*2, 15.f*2, 10.f*2));

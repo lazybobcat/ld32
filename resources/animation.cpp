@@ -84,6 +84,11 @@ bool Animation::isFinished() const
     return mCurrentFrame >= mNumFrames;
 }
 
+void Animation::stop()
+{
+    mCurrentFrame = mNumFrames;
+}
+
 sf::FloatRect Animation::getLocalBounds() const
 {
     return sf::FloatRect(getOrigin(), static_cast<sf::Vector2f>(getFrameSize()));
@@ -131,6 +136,10 @@ void Animation::update(sf::Time dt)
         else
         {
             mCurrentFrame++;
+            if(mCurrentFrame == mNumFrames)
+            {
+                textureRect = sf::IntRect(0, 0, mFrameSize.x, mFrameSize.y);
+            }
         }
     }
 

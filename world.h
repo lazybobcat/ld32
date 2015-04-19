@@ -12,6 +12,7 @@
 #include <resources/soundplayer.h>
 #include <resources/scriptplayer.h>
 #include <controllers/playercontroller.h>
+#include <controllers/aicontroller.h>
 #include <events/category.h>
 #include <events/commandqueue.h>
 #include <entities/spritenode.h>
@@ -19,6 +20,7 @@
 #include <entities/player.h>
 #include <entities/unicorn.h>
 #include <entities/unicornpathqueue.h>
+#include <entities/zombie.h>
 
 class World : public sf::NonCopyable
 {
@@ -59,6 +61,9 @@ private:
 
     // Player
     Player*                             mPlayerEntity;
+
+    // Controllers
+    AIController                        mAIController;
 };
 
 #endif // WORLD_H

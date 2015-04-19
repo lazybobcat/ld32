@@ -8,7 +8,6 @@ Entity::Entity(int healthpoints) :
     mVerticalVelocity(0.f),
     mHorizontalVelocity(300.f),
     mHealthpoints(healthpoints),
-    mJustGetHurt(false),
     mLastHurtTime(sf::Time::Zero),
     mKnocked(false),
     mDirection(Left),
@@ -23,14 +22,13 @@ void Entity::updateCurrent(sf::Time dt, CommandQueue &/*commands*/)
     if(isDestroyed())
             return;
 
-    if(mJustGetHurt)
+    if(mKnocked)
     {
         mLastHurtTime += dt;
         if(mLastHurtTime > sf::seconds(0.8f))
         {
-            mJustGetHurt = false;
             mLastHurtTime = sf::Time::Zero;
-            mKnocked = false;
+            unknock();
         }
     }
 
@@ -121,7 +119,10 @@ Entity::Direction Entity::getDirection() const
 
 void Entity::knock()
 {
+    if(mKnocked) return;
+
     mKnocked = true;
+    mLastHurtTime = sf::Time::Zero;
 }
 
 void Entity::unknock()
@@ -138,7 +139,7 @@ bool Entity::isKnocked() const
 
 void Entity::damage(int points)
 {
-    mHealthpoints -= points;
+    if(!isKnocked()) mHealthpoints -= points;
 }
 
 void Entity::heal(int points)

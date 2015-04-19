@@ -27,6 +27,7 @@ public:
 
     void                restart();
     bool                isFinished() const;
+    void                stop();
 
     sf::FloatRect       getLocalBounds() const;
     sf::FloatRect       getGlobalBounds() const;

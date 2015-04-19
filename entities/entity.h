@@ -36,8 +36,8 @@ public:
     void         demove(); // Soooooo ugly ....
     void         stop();
     bool         isMoving() const;
-    void        knock();
-    void        unknock();
+    virtual void knock();
+    virtual void unknock();
 
     void        playLocalSound(CommandQueue& commands, Sounds::ID sound);
     void        applyPhysics(sf::Time dt, float gravity, sf::RenderWindow& window);
@@ -54,9 +54,7 @@ public:
 protected:
     float       mHorizontalVelocity;
 
-private:
     int         mHealthpoints;
-    bool        mJustGetHurt;
     sf::Time    mLastHurtTime;
     bool        mKnocked;
 

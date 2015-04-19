@@ -29,6 +29,9 @@ public:
     void        fire(std::vector<sf::Vector2f>& path);
     void        retrieve();
 
+    virtual void knock();
+    virtual void unknock();
+
     virtual bool isCollidable() const { return true; }
     virtual int  getAttackPower() const { return 0; }
     virtual void setDirection(Direction dir);

@@ -36,7 +36,8 @@ World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &font
     mScripts(scripts),
     mPlayer(player),
     mSceneGraph(),
-    mSceneLayers()
+    mSceneLayers(),
+    mAIController()
 {
     loadTextures();
     buildScene();
@@ -97,6 +98,10 @@ void World::buildScene()
 
 
     // Ennemies
+    std::unique_ptr<Zombie> zombie1(new Zombie(mTextures, mAIController));
+    zombie1->setPosition(800, 475);
+    zombie1->setOrigin(75, 150);
+    mSceneLayers[Foreground]->attachChild(std::move(zombie1));
 
     // ...
 }
@@ -119,6 +124,13 @@ void World::update(sf::Time dt)
     });
     gravity_unicorn.category = Category::Unicorn;
     mCommandQueue.push(gravity_unicorn);
+
+    Command gravity_enemies;
+    gravity_enemies.action = derivedAction<Zombie>([&](Zombie& zombie, sf::Time dt) {
+        zombie.applyPhysics(dt, gravity, mWindow);
+    });
+    gravity_enemies.category = Category::Enemy;
+    mCommandQueue.push(gravity_enemies);
 
 
 
@@ -143,12 +155,7 @@ void World::handleCollisions()
 
     for(SceneNode::Pair pair : collisionPairs)
     {
-        if (matchesCategories(pair, Category::Player, Category::Enemy))
-        {
-            /*auto& player = static_cast<PlayerEntity&>(*pair.first);
-            auto& enemy = static_cast<Creature&>(*pair.second);*/
-        }
-        else if (matchesCategories(pair, Category::Player, Category::Platform))
+        if (matchesCategories(pair, Category::Player, Category::Platform))
         {
             auto& player = static_cast<Player&>(*pair.first);
             auto& platform = static_cast<Platform&>(*pair.second);
@@ -158,6 +165,28 @@ void World::handleCollisions()
             sf::Vector2f pos = player.getPosition();
             pos.y = platform.getPosition().y;
             player.setPosition(pos);
+        }
+        else if (matchesCategories(pair, Category::Enemy, Category::Platform))
+        {
+            auto& zombie = static_cast<Zombie&>(*pair.first);
+            auto& platform = static_cast<Platform&>(*pair.second);
+
+            zombie.mIsJumping = false;
+            zombie.mVerticalVelocity = 0.f;
+            sf::Vector2f pos = zombie.getPosition();
+            pos.y = platform.getPosition().y;
+            zombie.setPosition(pos);
+        }
+        else if (matchesCategories(pair, Category::Unicorn, Category::Enemy))
+        {
+            auto& unicorn = static_cast<Unicorn&>(*pair.first);
+            auto& zombie = static_cast<Zombie&>(*pair.second);
+
+            if(unicorn.isTraveling())
+            {
+                zombie.damage(unicorn.getAttackPower());
+                zombie.knock();
+            }
         }
         else if (matchesCategories(pair, Category::Unicorn, Category::Platform))
         {
@@ -182,6 +211,18 @@ void World::handleCollisions()
             {
                 player.retrieve();
                 unicorn.retrieve();
+            }
+        }
+        else if (matchesCategories(pair, Category::Player, Category::Enemy))
+        {
+            auto& player = static_cast<Player&>(*pair.first);
+            auto& zombie = static_cast<Zombie&>(*pair.second);
+
+            if(!player.isDestroyed() && !zombie.isDestroyed() && zombie.isAttacking())
+            {
+                player.damage(zombie.getAttackPower());
+                player.knock();
+
             }
         }
     }
