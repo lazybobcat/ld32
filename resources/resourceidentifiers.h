@@ -34,6 +34,9 @@ namespace Textures
         ZombieWalking,
         ZombieAttacking,
         ZombieDying,
+        Boss1,
+        Boss1Attacking,
+        Boss1Dying,
         Cursor,
         Pvbar,
         Medkit

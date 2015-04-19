@@ -2,6 +2,7 @@
 #define UNICORN_H
 
 #include <entities/entity.h>
+#include <entities/emitternode.h>
 #include <vector>
 
 class Unicorn : public Entity
@@ -33,6 +34,8 @@ private:
     float                       mSpeed;
     float                       mTravelTime;
     sf::Time                    mTimeSinceLastPoint;
+
+    EmitterNode*                mEmitter;
 };
 
 #endif // UNICORN_H

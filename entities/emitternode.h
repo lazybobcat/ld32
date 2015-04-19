@@ -10,7 +10,14 @@ class ParticleNode;
 class EmitterNode : public SceneNode
 {
 public:
-    explicit EmitterNode(Particle::Type type);
+    enum EmitterType
+    {
+        Rainbow,
+        Blood
+    };
+
+public:
+    explicit EmitterNode(Particle::Type type, EmitterType etype);
 
 private:
     virtual void    updateCurrent(sf::Time dt, CommandQueue &commands);
@@ -20,7 +27,10 @@ private:
 private:
     sf::Time        mAccumulatedTime;
     Particle::Type  mType;
+    EmitterType     mEType;
     ParticleNode*   mParticleSystem;
+
+
 };
 
 #endif // EMITTERNODE_H

@@ -19,7 +19,10 @@ public:
     ParticleNode(Particle::Type type, const TextureHolder& textures);
 
     void                    addParticle(sf::Vector2f position);
+    void                    addParticle(sf::Color color, sf::Vector2f position);
     Particle::Type          getParticleType() const;
+
+    void                    addAffector(std::function<void(Particle&, sf::Time)> affector);
 
 private:
     virtual void            updateCurrent(sf::Time dt, CommandQueue &commands);
@@ -28,7 +31,6 @@ private:
     void                    addVertex(float worldX, float worldY, float texCoordX, float texCoordY, const sf::Color& color) const;
     void                    computeVertices() const;
 
-    void                    addAffector(std::function<void(Particle&, sf::Time)> affector);
 
 private:
     typedef std::function<void(Particle&, sf::Time)>    Affector;

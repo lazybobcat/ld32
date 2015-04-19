@@ -15,7 +15,7 @@ TitleState::TitleState(StateStack &stack, Context context) :
 
     context.music->play(Musics::MainThemeSinging);
     context.music->setLoop(false);
-    context.music->setVolume(30.f);
+    context.music->setVolume(20.f);
 
     context.window->setKeyRepeatEnabled(false);
 }
@@ -39,7 +39,7 @@ bool TitleState::update(sf::Time dt)
     sf::FloatRect window(905,105,250,138);
     if(window.intersects(mWorld.getPlayerEntity()->getBoundingRect()))
     {
-        requestStackPop();
+        requestStackClear();
         requestStackPush(States::Game);
     }
 

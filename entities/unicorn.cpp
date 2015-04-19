@@ -10,7 +10,8 @@ Unicorn::Unicorn(std::vector<sf::Vector2f> &path, TextureHolder &textures) :
     mIsTraveling(true),
     mSpeed(200.f),
     mTravelTime(0.15f),
-    mTimeSinceLastPoint(sf::Time::Zero)
+    mTimeSinceLastPoint(sf::Time::Zero),
+    mEmitter(nullptr)
 {
     mSprite.setTexture(textures.get(Textures::Hero));
     mSprite.setTextureRect(sf::IntRect(300, 0, 75, 75));
@@ -27,6 +28,11 @@ Unicorn::Unicorn(std::vector<sf::Vector2f> &path, TextureHolder &textures) :
     {
         mIsTraveling = false;
     }
+
+    std::unique_ptr<EmitterNode> particles(new EmitterNode(Particle::Default, EmitterNode::Rainbow));
+    particles->setPosition(sf::Vector2f(37,60));
+    mEmitter = particles.get();
+    attachChild(std::move(particles));
 }
 
 void Unicorn::retrieve()
@@ -78,7 +84,8 @@ void Unicorn::updateCurrent(sf::Time dt, CommandQueue &commands)
                     currentPosition.y = 680;
                     setPosition(currentPosition);
                 }
-
+                if(mEmitter) detachChild(*mEmitter);
+                mEmitter = nullptr;
             }
             else
             {

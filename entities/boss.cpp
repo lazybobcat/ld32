@@ -112,29 +112,29 @@ FirstBoss::FirstBoss(World& world, AIController &ctrl, int hp, TextureHolder& te
     textures.get(Textures::ZombieAttacking).setSmooth(false);
     textures.get(Textures::ZombieDying).setSmooth(false);
 
-    mWaitingSprite.setTexture(textures.get(Textures::ZombieWalking));
+    mWaitingSprite.setTexture(textures.get(Textures::Boss1));
     mWaitingSprite.setTextureRect(sf::IntRect(0,0,75,75));
     mWaitingSprite.setScale(2.f, 2.f);
 
-    mDeadSprite.setTexture(textures.get(Textures::ZombieDying));
-    mDeadSprite.setTextureRect(sf::IntRect(75*3,0,75,75));
+    mDeadSprite.setTexture(textures.get(Textures::Boss1Dying));
+    mDeadSprite.setTextureRect(sf::IntRect(0,0,75,75));
     mDeadSprite.setScale(2.f, 2.f);
 
-    mAnimations[Walking].setTexture(textures.get(Textures::ZombieWalking));
+    mAnimations[Walking].setTexture(textures.get(Textures::Boss1Attacking));
     mAnimations[Walking].setFrameSize(sf::Vector2i(75,75));
     mAnimations[Walking].setNumFrames(4);
-    mAnimations[Walking].setDuration(sf::seconds(0.9f));
+    mAnimations[Walking].setDuration(sf::seconds(0.4f));
     mAnimations[Walking].setRepeating(true);
     mAnimations[Walking].setScale(sf::Vector2f(2.f, 2.f));
 
-    mAnimations[Attacking].setTexture(textures.get(Textures::ZombieAttacking));
+    mAnimations[Attacking].setTexture(textures.get(Textures::Boss1Attacking));
     mAnimations[Attacking].setFrameSize(sf::Vector2i(75,75));
     mAnimations[Attacking].setNumFrames(4);
     mAnimations[Attacking].setDuration(sf::seconds(0.4f));
     mAnimations[Attacking].setRepeating(true);
     mAnimations[Attacking].setScale(sf::Vector2f(2.f, 2.f));
 
-    mAnimations[Dying].setTexture(textures.get(Textures::ZombieDying));
+    mAnimations[Dying].setTexture(textures.get(Textures::Boss1Attacking));
     mAnimations[Dying].setFrameSize(sf::Vector2i(75,75));
     mAnimations[Dying].setNumFrames(4);
     mAnimations[Dying].setDuration(sf::seconds(0.4f));
@@ -143,9 +143,9 @@ FirstBoss::FirstBoss(World& world, AIController &ctrl, int hp, TextureHolder& te
 
     //
 
-    mHorizontalVelocity = 170.f;
+    mHorizontalVelocity = 120.f;
     mIsAttacking = true;
-    setScale(0.75f, 0.75f);
+    setScale(1.1f, 1.1f);
 }
 
 void FirstBoss::attack()
@@ -210,12 +210,12 @@ void FirstBoss::setDirection(Direction dir)
     switch(dir)
     {
         case Left:
-            setScale(0.75f, 0.75f);
+            setScale(1.1f, 1.1f);
             break;
 
         case Right:
         default:
-            setScale(-0.75f, 0.75f);
+            setScale(-1.1f, 1.1f);
             break;
     }
 
@@ -264,10 +264,7 @@ void FirstBoss::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) c
     }
     else if(mIsDying)
     {
-        if(!mAnimations[Dying].isFinished())
-            target.draw(mAnimations[Dying], states);
-        else
-            target.draw(mDeadSprite, states);
+        target.draw(mDeadSprite, states);
     }
     else if(mMovingAnimation)
     {

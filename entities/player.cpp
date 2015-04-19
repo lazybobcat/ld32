@@ -108,7 +108,8 @@ void Player::move(Direction dir)
 {
     if(mCanMove)
     {
-        Entity::move(dir);
+        setDirection(dir);
+        mIsMoving = true;
     }
 }
 
@@ -150,6 +151,9 @@ void Player::updateCurrent(sf::Time dt, CommandQueue &commands)
             node.attachChild(std::move(unicorn));
         });
         commands.push(command);
+
+        playLocalSound(commands, Sounds::Fire);
+        playLocalSound(commands, Sounds::UnicornFlying);
 
         mIsFiring = false;
         mFired    = true;

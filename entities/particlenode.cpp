@@ -30,6 +30,16 @@ void ParticleNode::addParticle(sf::Vector2f position)
     mParticles.push_back(p);
 }
 
+void ParticleNode::addParticle(sf::Color color, sf::Vector2f position)
+{
+    Particle p;
+    p.position  = position;
+    p.color     = color;
+    p.lifetime  = Table[mType].lifetime;
+
+    mParticles.push_back(p);
+}
+
 void ParticleNode::updateCurrent(sf::Time dt, CommandQueue &/*commands*/)
 {
     while(!mParticles.empty() && mParticles.front().lifetime <= sf::Time::Zero)

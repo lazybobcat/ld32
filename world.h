@@ -18,6 +18,7 @@
 #include <events/commandqueue.h>
 #include <entities/cameranode.h>
 #include <entities/spritenode.h>
+#include <entities/particlenode.h>
 #include <entities/textnode.h>
 #include <entities/uihealthpoints.h>
 #include <entities/platform.h>

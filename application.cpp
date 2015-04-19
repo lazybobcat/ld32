@@ -40,6 +40,9 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mTextures.load(Textures::ZombieAttacking,"assets/textures/zombies-attacking.png");
     mTextures.load(Textures::ZombieWalking, "assets/textures/zombies-walking.png");
     mTextures.load(Textures::ZombieDying,   "assets/textures/zombies-dying.png");
+    mTextures.load(Textures::Boss1,         "assets/textures/boss1.png");
+    mTextures.load(Textures::Boss1Attacking,"assets/textures/boss1-attacking.png");
+    mTextures.load(Textures::Boss1Dying,    "assets/textures/boss1-dying.png");
     mTextures.load(Textures::Cursor,        "assets/textures/unicorn_cursor.png");
     mTextures.load(Textures::Pvbar,         "assets/textures/pvbar.png");
     mTextures.load(Textures::Medkit,        "assets/textures/medkit.png");

@@ -21,7 +21,7 @@ std::vector<std::vector<Phase>> initializeBossPhases(World &world, Boss &boss)
     // Welcome to one of the most un-readable code I've ever made :
 
     // Boss1 Phase1
-    Phase b1p1(world, boss, sf::seconds(3.f));
+    Phase b1p1(world, boss, sf::seconds(5.f));
     b1p1.addSkill(sf::seconds(0.f), [&](Boss& b, sf::Time){
         Player* player = world.getPlayerEntity();
         //world.shakeCameraFor(0.3f);
@@ -36,7 +36,7 @@ std::vector<std::vector<Phase>> initializeBossPhases(World &world, Boss &boss)
     });
     data[Boss::Boss1].push_back(b1p1);
     // Boss1 Phase2
-    Phase b1p2(world, boss, sf::seconds(5.f));
+    Phase b1p2(world, boss, sf::seconds(3.f));
     b1p2.addSkill(sf::seconds(0.f), [&](Boss& b, sf::Time){
         b.sensible();
     });
@@ -55,6 +55,7 @@ std::vector<std::vector<Phase>> initializeBossPhases(World &world, Boss &boss)
         //world.addZombie(sf::Vector2f(pos.x, 100.f));
         //world.addZombie(sf::Vector2f(pos.x+50.f, 100.f));
         world.addZombie(sf::Vector2f(randomFloat(10, 1270), 100.f));
+        b.playLocalSound(world.getCommandQueue(), Sounds::Boss1AddPop);
     });
     data[Boss::Boss1].push_back(b1p4);
 

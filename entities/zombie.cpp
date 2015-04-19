@@ -4,7 +4,8 @@
 
 Zombie::Zombie(TextureHolder &textures, AIController &controller) :
     Creature(controller, 20),
-    mMovingAnimation(false)
+    mMovingAnimation(false),
+    mEmitter(nullptr)
 {
     textures.get(Textures::ZombieWalking).setSmooth(false);
     textures.get(Textures::ZombieAttacking).setSmooth(false);
@@ -42,6 +43,11 @@ Zombie::Zombie(TextureHolder &textures, AIController &controller) :
     //
 
     mHorizontalVelocity = 150.f;
+
+    std::unique_ptr<EmitterNode> particles(new EmitterNode(Particle::Default, EmitterNode::Blood));
+    particles->setPosition(sf::Vector2f(37,60));
+    mEmitter = particles.get();
+    attachChild(std::move(particles));
 }
 
 
@@ -102,6 +108,11 @@ void Zombie::updateCurrent(sf::Time dt, CommandQueue &commands)
     if(mIsDying)
     {
         mDepopTimer += dt;
+        if(mEmitter)
+        {
+            if(mEmitter) detachChild(*mEmitter);
+            mEmitter = nullptr;
+        }
     }
     else if(mCurrentBehavior)
     {

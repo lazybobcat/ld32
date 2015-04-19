@@ -48,6 +48,11 @@ SceneNode::Ptr SceneNode::detachChild(const SceneNode &node)
     return result;
 }
 
+void SceneNode::detachAllChildren()
+{
+    mChildren.clear();
+}
+
 void SceneNode::update(sf::Time dt, CommandQueue& commands)
 {
     updateCurrent(dt, commands);

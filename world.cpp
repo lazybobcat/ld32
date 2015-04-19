@@ -61,6 +61,8 @@ World::~World()
     {
         delete c;
     }
+
+    mSceneGraph.detachAllChildren();
 }
 
 
@@ -104,6 +106,9 @@ void World::buildScene()
     mSceneLayers[Foreground]->attachChild(std::move(platform_small1));
 
     // Add particle node to the scene
+    std::unique_ptr<ParticleNode> pnode(new ParticleNode(Particle::Default, mTextures));
+    pnode->addAffector([](Particle &p, sf::Time dt) {p.position.y+=30.f*dt.asSeconds();});
+    mSceneLayers[Foreground]->attachChild(std::move(pnode));
 
     // Player
     std::unique_ptr<Player> player(new Player(mTextures));
@@ -168,6 +173,9 @@ void World::buildMenuScene()
     mSceneLayers[Foreground]->attachChild(std::move(platform_small1));
 
     // Add particle node to the scene
+    std::unique_ptr<ParticleNode> pnode(new ParticleNode(Particle::Default, mTextures));
+    pnode->addAffector([](Particle &p, sf::Time dt) {p.position.y+=30.f*dt.asSeconds();});
+    mSceneLayers[Foreground]->attachChild(std::move(pnode));
 
     // Player
     std::unique_ptr<Player> player(new Player(mTextures));

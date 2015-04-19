@@ -8,7 +8,7 @@ GameState::GameState(StateStack &stack, Context context) :
 {
     context.music->play(Musics::MainThemeMusical);
     context.music->setLoop(true);
-    context.music->setVolume(20.f);
+    context.music->setVolume(10.f);
 }
 
 
@@ -34,7 +34,7 @@ bool GameState::update(sf::Time dt)
 
         if(mGameOverTimer.asSeconds() >= 1.2f)
         {
-            requestStackPop();
+            requestStackClear();
             requestStackPush(States::Title);
             requestStackPush(States::GameOver);
         }

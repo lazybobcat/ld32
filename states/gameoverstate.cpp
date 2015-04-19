@@ -24,7 +24,7 @@ bool GameoverState::update(sf::Time dt)
 {
     mTimer += dt;
 
-    if(mTimer.asSeconds() >= 4.f)
+    if(mTimer.asSeconds() >= 2.f)
     {
         requestStackPop();
     }
@@ -37,5 +37,5 @@ bool GameoverState::handleEvent(const sf::Event &/*event*/)
 {
     //CommandQueue& commands = mWorld.getCommandQueue();
 
-    return true;
+    return false;
 }
