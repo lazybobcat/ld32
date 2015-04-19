@@ -10,6 +10,7 @@ class AIState
 {
 public:
     AIState(Player& player);
+    virtual ~AIState() {}
 
     virtual AIState*    run(Zombie& entity, sf::Time dt, CommandQueue& commands) = 0;
     virtual void        init(Zombie& entity) = 0;

@@ -4,13 +4,14 @@
 TitleState::TitleState(StateStack &stack, Context context) :
     State(stack, context),
     mText(),
-    mShowText(true),
-    mTextEffectTime(sf::Time::Zero)
+    mPlayer(*context.player),
+    mWorld(*context.window, *context.textures, *context.fonts, *context.music, *context.sounds, *context.scripts, mPlayer, true)
 {
     mText.setFont(context.fonts->get(Fonts::Savage));
-    mText.setString("Welcome on Potato Framework ! Press any key to quit !");
+    mText.setString("Unikorn");
+    mText.setCharacterSize(70);
     centerOrigin(mText);
-    mText.setPosition(context.window->getView().getSize() / 2.f);
+    mText.setPosition(context.window->getView().getSize().x / 2.f, 50.f);
 }
 
 
@@ -18,18 +19,22 @@ void TitleState::draw()
 {
     sf::RenderWindow& window = *getContext().window;
 
-    if (mShowText)
-        window.draw(mText);
+    mWorld.draw();
+    window.draw(mText);
 }
 
 bool TitleState::update(sf::Time dt)
 {
-    mTextEffectTime += dt;
+    CommandQueue& commands = mWorld.getCommandQueue();
+    mPlayer.handleRealtimeInput(commands);
 
-    if (mTextEffectTime >= sf::seconds(0.5f))
+    mWorld.update(dt);
+
+    sf::FloatRect window(905,105,250,138);
+    if(window.intersects(mWorld.getPlayerEntity()->getBoundingRect()))
     {
-        mShowText = !mShowText;
-        mTextEffectTime = sf::Time::Zero;
+        requestStackPop();
+        requestStackPush(States::Game);
     }
 
     return true;
@@ -37,11 +42,21 @@ bool TitleState::update(sf::Time dt)
 
 bool TitleState::handleEvent(const sf::Event& event)
 {
-    // If any key is pressed, we leave
+    CommandQueue& commands = mWorld.getCommandQueue();
+    mPlayer.handleEvent(event, commands);
+
+    // If ESC key is pressed, we leave
     if (event.type == sf::Event::KeyReleased)
     {
-        requestStackPop();
-        requestStackPush(States::Game);
+        switch(event.key.code)
+        {
+            case sf::Keyboard::Return:
+                requestStackPop();
+                requestStackPush(States::Game);
+                break;
+
+            default:break;
+        }
     }
 
     return true;

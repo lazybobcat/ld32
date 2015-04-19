@@ -3,7 +3,8 @@
 GameState::GameState(StateStack &stack, Context context) :
     State(stack, context),
     mPlayer(*context.player),
-    mWorld(*context.window, *context.textures, *context.fonts, *context.music, *context.sounds, *context.scripts, mPlayer)
+    mWorld(*context.window, *context.textures, *context.fonts, *context.music, *context.sounds, *context.scripts, mPlayer),
+    mIsGameOver(false)
 {
    // context.music->play(Musics::MainTheme);
     context.music->setVolume(80.f);
@@ -21,12 +22,22 @@ bool GameState::update(sf::Time dt)
 {
 
     // Mission status check
-    /*if(mWorld.raceOver())
+    if(mWorld.getPlayerEntity() && mWorld.getPlayerEntity()->isDestroyed())
     {
-        requestStackPop();
-        requestStackPush(States::Game);
-        return true;
-    }*/
+        mGameOverTimer += dt;
+
+        if(!mIsGameOver)
+        {
+            mIsGameOver = true;
+        }
+
+        if(mGameOverTimer.asSeconds() >= 1.2f)
+        {
+            requestStackPop();
+            requestStackPush(States::Title);
+            requestStackPush(States::GameOver);
+        }
+    }
 
     CommandQueue& commands = mWorld.getCommandQueue();
     mPlayer.handleRealtimeInput(commands);
@@ -49,12 +60,15 @@ bool GameState::handleEvent(const sf::Event &event)
         switch(event.key.code)
         {
             case sf::Keyboard::Escape:
-                requestStackPop();
-                requestStackPush(States::Title);
+                if(!mIsGameOver) requestStackPush(States::Pause);
                 break;
 
             default:break;
         }
+    }
+    else if(event.type == sf::Event::LostFocus)
+    {
+        if(!mIsGameOver) requestStackPush(States::Pause);
     }
 
     return true;

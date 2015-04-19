@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <states/state.h>
+#include <world.h>
+#include <controllers/playercontroller.h>
 
 class TitleState : public State
 {
@@ -15,8 +17,9 @@ public:
 
 private:
     sf::Text            mText;
-    bool                mShowText;
-    sf::Time            mTextEffectTime;
+
+    PlayerController&   mPlayer;
+    World               mWorld;
 };
 
 #endif // TITLESTATE_H

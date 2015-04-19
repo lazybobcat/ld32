@@ -28,7 +28,7 @@
 class World : public sf::NonCopyable
 {
 public:
-    World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &fonts, MusicPlayer &music, SoundPlayer &sounds, ScriptPlayer &scripts, PlayerController &player);
+    World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &fonts, MusicPlayer &music, SoundPlayer &sounds, ScriptPlayer &scripts, PlayerController &player, bool menuworld = false);
 
     void        update(sf::Time dt);
     void        draw();
@@ -39,9 +39,12 @@ public:
     void        shakeCameraFor(float sec);
     void        splashBlood();
 
+    Player*     getPlayerEntity() { return mPlayerEntity; }
+
 private:
     void        loadTextures();
     void        buildScene();
+    void        buildMenuScene();
     void        handleCollisions();
 
 private:

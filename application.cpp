@@ -2,6 +2,8 @@
 #include <utils.h>
 #include <states/titlestate.h>
 #include <states/gamestate.h>
+#include <states/pausestate.h>
+#include <states/gameoverstate.h>
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
@@ -27,6 +29,7 @@ Application::Application(unsigned int width, unsigned int height, const std::str
     mFonts.load(Fonts::Savage, "assets/fonts/savage.ttf");
     mTextures.load(Textures::Particle,      "assets/textures/particle.png");
     mTextures.load(Textures::Background,    "assets/textures/background.png");
+    mTextures.load(Textures::BackgroundMenu,"assets/textures/background-menu.png");
     mTextures.load(Textures::Hero,          "assets/textures/hero.png");
     mTextures.load(Textures::HeroWalkingWith,"assets/textures/hero-walkingwith.png");
     mTextures.load(Textures::HeroWalkingWithout,"assets/textures/hero-walkingwithout.png");
@@ -105,7 +108,7 @@ void Application::render()
 
     mWindow.draw(mCursor);
     mWindow.setView(mWindow.getDefaultView());
-    mWindow.draw(mStatisticsText);
+    //mWindow.draw(mStatisticsText);
     mWindow.display();
 }
 
@@ -113,10 +116,11 @@ void Application::registerStates()
 {
     mStateStack.registerState<TitleState>(States::Title);
     mStateStack.registerState<GameState>(States::Game);
-    /*mStateStack.registerState<MenuState>(States::Menu);
     mStateStack.registerState<PauseState>(States::Pause);
+    mStateStack.registerState<GameoverState>(States::GameOver);
+    /*mStateStack.registerState<MenuState>(States::Menu);
     mStateStack.registerState<LoadingState>(States::Loading);
-    mStateStack.registerState<GameOverState>(States::GameOver);*/
+    */
 }
 
 void Application::updateStatistics(sf::Time elapsedTime)

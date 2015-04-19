@@ -26,7 +26,7 @@ bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Categor
 ////////////////////////////////////////////////////
 
 
-World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &fonts, MusicPlayer &music, SoundPlayer &sounds, ScriptPlayer &scripts, PlayerController &player) :
+World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &fonts, MusicPlayer &music, SoundPlayer &sounds, ScriptPlayer &scripts, PlayerController &player, bool menuworld) :
     mWindow(window),
     mWorldView(window.getDefaultView()),
     mTextures(textures),
@@ -43,7 +43,8 @@ World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &font
     mPointsText(nullptr)
 {
     loadTextures();
-    buildScene();
+    if(menuworld)   buildMenuScene();
+    else            buildScene();
 
     // Other things here, like setting the view center on the player, scores, etc...
     std::unique_ptr<SoundNode> sound(new SoundNode(sounds));
@@ -122,6 +123,45 @@ void World::buildScene()
     mPointsText = score.get();
     mSceneLayers[UI]->attachChild(std::move(score));
 }
+
+void World::buildMenuScene()
+{
+    // Initialize layers
+    for(std::size_t i = 0; i < LayerCount; ++i)
+    {
+        Category::Type cat = ((i == Foreground) ? Category::Foreground : Category::None);
+        SceneNode::Ptr layer(new SceneNode(cat));
+        mSceneLayers[i] = layer.get();
+
+        mSceneGraph.attachChild(std::move(layer));
+    }
+
+    // Background
+    std::unique_ptr<SpriteNode> background(new SpriteNode(mTextures.get(Textures::BackgroundMenu)));
+    mSceneLayers[Background]->attachChild(std::move(background));
+
+    // Platforms
+    std::unique_ptr<Platform> platform_ground(new Platform(Platform::Ground, mTextures));
+    platform_ground->setPosition(sf::Vector2f(0, mWindow.getSize().y - 45));
+    mSceneLayers[Foreground]->attachChild(std::move(platform_ground));
+
+    std::unique_ptr<Platform> platform_small1(new Platform(Platform::Small, mTextures));
+    platform_small1->setPosition(sf::Vector2f(1106, 430));
+    mSceneLayers[Foreground]->attachChild(std::move(platform_small1));
+
+    // Add particle node to the scene
+
+    // Player
+    std::unique_ptr<Player> player(new Player(mTextures));
+    player->setPosition(640, 10);
+    player->setOrigin(75, 150);
+    mPlayerEntity = player.get();
+    // Adding Unicorn Path Queue
+    std::unique_ptr<UnicornPathQueue> path(new UnicornPathQueue(mPlayerEntity));
+    mSceneLayers[Foreground]->attachChild(std::move(path));
+    mSceneLayers[Foreground]->attachChild(std::move(player));
+}
+
 
 void World::update(sf::Time dt)
 {

@@ -23,6 +23,7 @@ namespace Textures
     {
         Particle,
         Background,
+        BackgroundMenu,
         Hero,
         HeroWalkingWith,
         HeroWalkingWithout,

@@ -56,7 +56,9 @@ SOURCES += main.cpp \
     controllers/AIStates/attackingbehavior.cpp \
     controllers/AIStates/waitingbehavior.cpp \
     entities/cameranode.cpp \
-    entities/uihealthpoints.cpp
+    entities/uihealthpoints.cpp \
+    states/pausestate.cpp \
+    states/gameoverstate.cpp
 
 OTHER_FILES +=
 
@@ -108,6 +110,8 @@ HEADERS += \
     controllers/AIStates/attackingbehavior.h \
     controllers/AIStates/waitingbehavior.h \
     entities/cameranode.h \
-    entities/uihealthpoints.h
+    entities/uihealthpoints.h \
+    states/pausestate.h \
+    states/gameoverstate.h
 
 

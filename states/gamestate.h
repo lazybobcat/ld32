@@ -17,6 +17,9 @@ public:
 private:
     PlayerController& mPlayer;
     World             mWorld;
+
+    bool              mIsGameOver;
+    sf::Time          mGameOverTimer;
 };
 
 #endif // GAMESTATE_H

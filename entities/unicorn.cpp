@@ -73,6 +73,12 @@ void Unicorn::updateCurrent(sf::Time dt, CommandQueue &commands)
             if(mPath.empty())
             {
                 mIsTraveling = false;
+                if(currentPosition.y > 768)
+                {
+                    currentPosition.y = 680;
+                    setPosition(currentPosition);
+                }
+
             }
             else
             {
