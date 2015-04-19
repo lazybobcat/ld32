@@ -60,7 +60,8 @@ SOURCES += main.cpp \
     states/pausestate.cpp \
     states/gameoverstate.cpp \
     entities/creature.cpp \
-    entities/boss.cpp
+    entities/boss.cpp \
+    entities/medkit.cpp
 
 OTHER_FILES +=
 
@@ -116,6 +117,7 @@ HEADERS += \
     states/pausestate.h \
     states/gameoverstate.h \
     entities/creature.h \
-    entities/boss.h
+    entities/boss.h \
+    entities/medkit.h
 
 

@@ -16,6 +16,7 @@ namespace Category
         Foreground      = 1 << 7,
         Camera          = 1 << 8,
         UI              = 1 << 9,
+        Medkit          = 1 << 10,
         // ...
         //MixedCategory        = Category1 | Category2,
 

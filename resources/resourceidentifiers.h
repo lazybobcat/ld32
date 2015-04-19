@@ -35,7 +35,8 @@ namespace Textures
         ZombieAttacking,
         ZombieDying,
         Cursor,
-        Pvbar
+        Pvbar,
+        Medkit
     };
 }
 
@@ -71,7 +72,8 @@ namespace Musics
 {
     enum ID
     {
-
+        MainThemeSinging,
+        MainThemeMusical
     };
 }
 
@@ -81,7 +83,15 @@ namespace Sounds
 {
     enum ID
     {
-
+        Jump,
+        Hit,
+        Fire,
+        Medkit,
+        Pickup,
+        UnicornFlying,
+        ZombieHit,
+        ZombieJump,
+        Boss1AddPop
     };
 }
 typedef ResourceHolder<sf::SoundBuffer, Sounds::ID> SoundHolder;

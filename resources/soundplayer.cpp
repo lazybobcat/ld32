@@ -17,7 +17,15 @@ SoundPlayer::SoundPlayer() :
     mSounds()
 {
     // Fill buffers with sounds
-    //mSoundBufers.load(Sounds::MySound, "my_sound_file.ogg");
+    mSoundBuffers.load(Sounds::Jump,            "assets/sounds/jump.wav");
+    mSoundBuffers.load(Sounds::Hit,             "assets/sounds/hit.wav");
+    mSoundBuffers.load(Sounds::Fire,            "assets/sounds/fire.wav");
+    mSoundBuffers.load(Sounds::Medkit,          "assets/sounds/medkit.wav");
+    mSoundBuffers.load(Sounds::Pickup,          "assets/sounds/pickup.wav");
+    mSoundBuffers.load(Sounds::UnicornFlying,   "assets/sounds/unicorn-flying.wav");
+    mSoundBuffers.load(Sounds::ZombieHit,       "assets/sounds/zombie-hit.wav");
+    mSoundBuffers.load(Sounds::ZombieJump,      "assets/sounds/zombie-jump.wav");
+    mSoundBuffers.load(Sounds::Boss1AddPop,     "assets/sounds/boss1-addpop.wav");
 }
 
 void SoundPlayer::play(Sounds::ID sound)

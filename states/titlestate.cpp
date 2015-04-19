@@ -12,6 +12,12 @@ TitleState::TitleState(StateStack &stack, Context context) :
     mText.setCharacterSize(70);
     centerOrigin(mText);
     mText.setPosition(context.window->getView().getSize().x / 2.f, 50.f);
+
+    context.music->play(Musics::MainThemeSinging);
+    context.music->setLoop(false);
+    context.music->setVolume(30.f);
+
+    context.window->setKeyRepeatEnabled(false);
 }
 
 

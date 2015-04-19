@@ -55,6 +55,16 @@ World::World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &font
 }
 
 
+World::~World()
+{
+    for(Entity* c : mWaitingCreations)
+    {
+        delete c;
+    }
+}
+
+
+
 void World::loadTextures()
 {
     //mTextures.load(Textures::MyTextureIDHere, "assets/textures/whatever.png");
@@ -85,9 +95,9 @@ void World::buildScene()
     platform_medium1->setPosition(sf::Vector2f(0, 430));
     mSceneLayers[Foreground]->attachChild(std::move(platform_medium1));
 
-    std::unique_ptr<Platform> platform_medium2(new Platform(Platform::Medium, mTextures));
+    /*std::unique_ptr<Platform> platform_medium2(new Platform(Platform::Medium, mTextures));
     platform_medium2->setPosition(sf::Vector2f(450, 225));
-    mSceneLayers[Foreground]->attachChild(std::move(platform_medium2));
+    mSceneLayers[Foreground]->attachChild(std::move(platform_medium2));*/
 
     std::unique_ptr<Platform> platform_small1(new Platform(Platform::Small, mTextures));
     platform_small1->setPosition(sf::Vector2f(1106, 430));
@@ -107,10 +117,18 @@ void World::buildScene()
 
 
     // Ennemies
-    std::unique_ptr<Zombie> zombie1(new Zombie(mTextures, mAIController));
+    /*std::unique_ptr<Zombie> zombie1(new Zombie(mTextures, mAIController));
     zombie1->setPosition(610, 100);
     zombie1->setOrigin(75, 150);
-    mSceneLayers[Foreground]->attachChild(std::move(zombie1));
+    mSceneLayers[Foreground]->attachChild(std::move(zombie1));*/
+    /*std::unique_ptr<FirstBoss> zombie1(new FirstBoss(*this, mAIController, 100, mTextures));
+    zombie1->setPosition(1200, 700);
+    zombie1->setOrigin(75, 150);
+    mSceneLayers[Foreground]->attachChild(std::move(zombie1));*/
+
+    addBoss(Boss::Boss1, sf::Vector2f(1200, 700));
+    //addZombie(sf::Vector2f(610, 100));
+    //addMedkit(sf::Vector2f(610, 100));
 
 
     // UI
@@ -167,6 +185,17 @@ void World::update(sf::Time dt)
 {
     float gravity = 1000.f;
 
+    // Creations
+    for(auto c : mWaitingCreations)
+    {
+        //mCreatures.insert(c);
+        std::unique_ptr<Entity> cp(c);
+        mSceneLayers[Foreground]->attachChild(std::move(cp));
+    }
+    mWaitingCreations.clear();
+
+
+
     // Game logic here
     Command gravity_player;
     gravity_player.action = derivedAction<Player>([&](Player& player, sf::Time dt) {
@@ -183,11 +212,18 @@ void World::update(sf::Time dt)
     mCommandQueue.push(gravity_unicorn);
 
     Command gravity_enemies;
-    gravity_enemies.action = derivedAction<Zombie>([&](Zombie& zombie, sf::Time dt) {
+    gravity_enemies.action = derivedAction<Creature>([&](Creature& zombie, sf::Time dt) {
         zombie.applyPhysics(dt, gravity, mWindow);
     });
     gravity_enemies.category = Category::Enemy;
     mCommandQueue.push(gravity_enemies);
+
+    Command gravity_medkits;
+    gravity_medkits.action = derivedAction<Medkit>([&](Medkit& m, sf::Time dt) {
+        m.applyPhysics(dt, gravity, mWindow);
+    });
+    gravity_medkits.category = Category::Medkit;
+    mCommandQueue.push(gravity_medkits);
 
 
 
@@ -237,7 +273,7 @@ void World::handleCollisions()
         }
         else if (matchesCategories(pair, Category::Enemy, Category::Platform))
         {
-            auto& zombie = static_cast<Zombie&>(*pair.first);
+            auto& zombie = static_cast<Creature&>(*pair.first);
             auto& platform = static_cast<Platform&>(*pair.second);
 
             zombie.mIsJumping = false;
@@ -249,15 +285,21 @@ void World::handleCollisions()
         else if (matchesCategories(pair, Category::Unicorn, Category::Enemy))
         {
             auto& unicorn = static_cast<Unicorn&>(*pair.first);
-            auto& zombie = static_cast<Zombie&>(*pair.second);
+            auto& zombie = static_cast<Creature&>(*pair.second);
 
             if(unicorn.isTraveling())
             {
                 if(!zombie.isKnocked())
                 {
+                    int life = zombie.getHealthpoints();
                     zombie.damage(unicorn.getAttackPower());
                     zombie.knock();
-                    shakeCamera();
+
+                    if(life > zombie.getHealthpoints())
+                    {
+                        shakeCamera();
+                        mSounds.play(Sounds::ZombieHit);
+                    }
 
                     if(zombie.getHealthpoints() <= 0)
                     {
@@ -280,6 +322,28 @@ void World::handleCollisions()
                 unicorn.setPosition(pos);
             }
         }
+        else if (matchesCategories(pair, Category::Medkit, Category::Platform))
+        {
+            auto& medkit = static_cast<Medkit&>(*pair.first);
+            auto& platform = static_cast<Platform&>(*pair.second);
+
+            medkit.mIsJumping = false;
+            medkit.mVerticalVelocity = 0.f;
+            sf::Vector2f pos = medkit.getPosition();
+            pos.y = platform.getPosition().y;
+            medkit.setPosition(pos);
+        }
+        else if (matchesCategories(pair, Category::Medkit, Category::Player))
+        {
+            auto& medkit = static_cast<Medkit&>(*pair.first);
+            auto& player = static_cast<Player&>(*pair.second);
+
+            if(!medkit.isDestroyed())
+            {
+                medkit.use(player);
+                mSounds.play(Sounds::Medkit);
+            }
+        }
         else if (matchesCategories(pair, Category::Player, Category::Unicorn))
         {
             auto& player = static_cast<Player&>(*pair.first);
@@ -289,20 +353,26 @@ void World::handleCollisions()
             {
                 player.retrieve();
                 unicorn.retrieve();
+                mSounds.play(Sounds::Pickup);
             }
         }
         else if (matchesCategories(pair, Category::Player, Category::Enemy))
         {
             auto& player = static_cast<Player&>(*pair.first);
-            auto& zombie = static_cast<Zombie&>(*pair.second);
+            auto& zombie = static_cast<Creature&>(*pair.second);
 
             if(!player.isDestroyed() && !zombie.isDestroyed() && zombie.isAttacking())
             {
-                if(!player.isKnocked())
+                if(!player.isKnocked() && !zombie.isKnocked())
                 {
-                    player.damage(zombie.getAttackPower());
-                    player.knock();
-                    splashBlood();
+                    int ap = zombie.getAttackPower();
+                    if(ap > 0)
+                    {
+                        player.damage(ap);
+                        player.knock();
+                        splashBlood();
+                        mSounds.play(Sounds::Hit);
+                    }
                 }
 
             }
@@ -352,4 +422,44 @@ void World::splashBlood()
         c.splash(sf::Color::Red);
     });
     mCommandQueue.push(command);
+}
+
+
+
+void World::addZombie(sf::Vector2f pos)
+{
+    Zombie* z = new Zombie(mTextures, mAIController);
+    z->setOrigin(75, 150);
+    z->setPosition(pos);
+
+    mWaitingCreations.insert(z);
+}
+
+void World::addBoss(Boss::Bosses type, sf::Vector2f pos)
+{
+    Boss* b;
+
+    switch(type)
+    {
+        case Boss::Boss1:
+            b = new FirstBoss(*this, mAIController, 100, mTextures);
+            break;
+
+        default:
+            break;
+    }
+
+    b->setOrigin(75, 150);
+    b->setPosition(pos);
+
+    mWaitingCreations.insert(b);
+}
+
+void World::addMedkit(sf::Vector2f pos)
+{
+    Medkit* m = new Medkit(mTextures);
+    m->setOrigin(37, 75);
+    m->setPosition(pos);
+
+    mWaitingCreations.insert(m);
 }

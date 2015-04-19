@@ -1,5 +1,7 @@
 #include <datatables.h>
+#include <entities/player.h>
 #include <resources/particle.h>
+#include <world.h>
 
 
 std::vector<ParticleData> initializeParticleData()
@@ -19,54 +21,46 @@ std::vector<std::vector<Phase>> initializeBossPhases(World &world, Boss &boss)
     // Welcome to one of the most un-readable code I've ever made :
 
     // Boss1 Phase1
-    /*Phase b1p1(world, boss, sf::seconds(7.f));
+    Phase b1p1(world, boss, sf::seconds(3.f));
     b1p1.addSkill(sf::seconds(0.f), [&](Boss& b, sf::Time){
-        PlayerEntity* player = world.player();
-        world.shakeCameraFor(0.3f);
-        if((b.getPosition().x-player->getPosition().x) > 0) {
+        Player* player = world.getPlayerEntity();
+        //world.shakeCameraFor(0.3f);
+        boss.unsensible();
+        if((b.getPosition().x-player->getPosition().x) > 40) {
             boss.move(Entity::Left);
-        } else {
+        } else if((b.getPosition().x-player->getPosition().x) < 40) {
             boss.move(Entity::Right);
+        } else {
+            //boss.knock();
         }
     });
-    data[Entity::Boss1].push_back(b1p1);
+    data[Boss::Boss1].push_back(b1p1);
     // Boss1 Phase2
     Phase b1p2(world, boss, sf::seconds(5.f));
     b1p2.addSkill(sf::seconds(0.f), [&](Boss& b, sf::Time){
-        b.knock();
+        b.sensible();
     });
-    data[Entity::Boss1].push_back(b1p2);
+    data[Boss::Boss1].push_back(b1p2);
     // Boss1 Phase3
-    Phase b1p3(world, boss, sf::seconds(2.f));
-    b1p3.addSkill(sf::seconds(0.f), [&](Boss& b, sf::Time dt){
-        b.setPosition(sf::Vector2f(b.getPosition().x, b.getPosition().y-500*dt.asSeconds()));
+    Phase b1p3(world, boss, sf::seconds(1.f));
+    b1p3.addSkill(sf::seconds(0.9f), [&](Boss& b, sf::Time dt){
+        if(randomInt(0,5) == 1) world.addMedkit(sf::Vector2f(randomFloat(10, 1270), 20));
     });
-    data[Entity::Boss1].push_back(b1p3);
+    data[Boss::Boss1].push_back(b1p3);
     // Boss1 Phase4
-    Phase b1p4(world, boss, sf::seconds(0.f));
-    b1p4.addSkill(sf::seconds(0.f), [&](Boss& b, sf::Time dt){
-        PlayerEntity* player = world.player();
-        if(player->getPosition().x < 512) {
-            b.setPosition(sf::Vector2f(-50.f, 512-105));
-            for(unsigned int i = 0; i < 10; ++i)
-            {
-                world.addCreature(2, 50.f + i*32.f);
-            }
-            world.addCreature(1, 380.f);
-        } else {
-            b.setPosition(sf::Vector2f(1024+50.f, 512-105));
-            for(unsigned int i = 0; i < 10; ++i)
-            {
-                world.addCreature(2, -50.f - i*32.f);
-            }
-            world.addCreature(1, -380.f);
-        }
+    Phase b1p4(world, boss, sf::seconds(1.f));
+    b1p4.addSkill(sf::seconds(0.9f), [&](Boss& b, sf::Time dt){
+        Player* player = world.getPlayerEntity();
+        auto pos = player->getPosition();
+        //world.addZombie(sf::Vector2f(pos.x, 100.f));
+        //world.addZombie(sf::Vector2f(pos.x+50.f, 100.f));
+        world.addZombie(sf::Vector2f(randomFloat(10, 1270), 100.f));
     });
-    data[Entity::Boss1].push_back(b1p4);
+    data[Boss::Boss1].push_back(b1p4);
 
     //////////////////////////////////////////////
 
-    // Boss2 Phase2
+    /*// Boss2 Phase2
     Phase b2p2(world, boss, sf::seconds(2.f));
     b2p2.addSkill(sf::seconds(0.90f), [&](Boss&, sf::Time){
     });

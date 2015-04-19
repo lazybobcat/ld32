@@ -146,6 +146,8 @@ void Entity::damage(int points)
 void Entity::heal(int points)
 {
     mHealthpoints += points;
+    if(mHealthpoints > mMaxHealthpoints)
+        mHealthpoints = mMaxHealthpoints;
 }
 
 void Entity::destroy()

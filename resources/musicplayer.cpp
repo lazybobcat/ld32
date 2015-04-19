@@ -6,7 +6,8 @@ MusicPlayer::MusicPlayer() :
     mVolume(100.f)
 {
     // Fill mFilenames table here :
-    // mFilenames[Musics::myMusic] = "my_file.ogg";
+    mFilenames[Musics::MainThemeMusical] = "assets/musics/ld32-maintheme-musical.wav";
+    mFilenames[Musics::MainThemeSinging] = "assets/musics/ld32-maintheme-singing.wav";
 }
 
 void MusicPlayer::play(Musics::ID song)
@@ -17,13 +18,18 @@ void MusicPlayer::play(Musics::ID song)
         throw std::runtime_error("Music " + filename + " could not be loaded.");
 
     mMusic.setVolume(mVolume);
-    mMusic.setLoop(true);
+    //mMusic.setLoop(true);
     mMusic.play();
 }
 
 void MusicPlayer::stop()
 {
     mMusic.stop();
+}
+
+void MusicPlayer::setLoop(bool b)
+{
+    mMusic.setLoop(b);
 }
 
 void MusicPlayer::setVolume(float volume)

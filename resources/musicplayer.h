@@ -17,6 +17,7 @@ public:
 
     void        play(Musics::ID song);
     void        stop();
+    void        setLoop(bool b);
     void        pause(bool flag = true);
     void        setVolume(float volume);
 

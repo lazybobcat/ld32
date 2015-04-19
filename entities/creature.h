@@ -28,7 +28,7 @@ public:
     bool                isResting() const;
     virtual void        rest();
     virtual void        unrest();
-    bool                isAttacking() const { return mIsAttacking; }
+    virtual bool        isAttacking() const { return mIsAttacking; }
 
     virtual unsigned int    getCategory() const { return Category::Enemy; }
 

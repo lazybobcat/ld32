@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <array>
+#include <set>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -20,15 +21,18 @@
 #include <entities/textnode.h>
 #include <entities/uihealthpoints.h>
 #include <entities/platform.h>
+#include <entities/medkit.h>
 #include <entities/player.h>
 #include <entities/unicorn.h>
 #include <entities/unicornpathqueue.h>
 #include <entities/zombie.h>
+#include <entities/boss.h>
 
 class World : public sf::NonCopyable
 {
 public:
     World(sf::RenderWindow& window, TextureHolder &textures, FontHolder &fonts, MusicPlayer &music, SoundPlayer &sounds, ScriptPlayer &scripts, PlayerController &player, bool menuworld = false);
+    ~World();
 
     void        update(sf::Time dt);
     void        draw();
@@ -40,6 +44,10 @@ public:
     void        splashBlood();
 
     Player*     getPlayerEntity() { return mPlayerEntity; }
+
+    void        addZombie(sf::Vector2f pos);
+    void        addBoss(Boss::Bosses type, sf::Vector2f pos);
+    void        addMedkit(sf::Vector2f pos);
 
 private:
     void        loadTextures();
@@ -72,6 +80,9 @@ private:
 
     // Player
     Player*                             mPlayerEntity;
+
+    // Enemies
+    std::set<Entity*>                   mWaitingCreations;
 
     // Controllers
     AIController                        mAIController;
