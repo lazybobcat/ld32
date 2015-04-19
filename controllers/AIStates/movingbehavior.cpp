@@ -2,6 +2,8 @@
 #include <controllers/AIStates/attackingbehavior.h>
 #include <controllers/AIStates/waitingbehavior.h>
 
+#include <iostream>
+
 MovingBehavior::MovingBehavior(Player &player) :
     AIState(player)
 {
@@ -33,27 +35,54 @@ AIState* MovingBehavior::run(Zombie &entity, sf::Time dt, CommandQueue &commands
         return new WaitingBehavior(mPlayer, 0.85f);
     }
 
-    if(dist > 40)
+    Entity::Direction dir = Entity::Right;
+
+    if(direction.y > 10) // Zombie above
     {
-        if(direction.x > 0)
+        if(entity.getPosition().x < 1015.f)
+            dir = Entity::Right;
+        else
+            dir = Entity::Left;
+    }
+    else if(direction.y < -10) // Zombie below
+    {
+        if(std::abs(direction.x) < 40 && dist > 150 && dist < 250) // If we can jump
         {
-            entity.move(Entity::Right);
+            entity.jump();
+        }
+        else if(std::abs(direction.x) < 40 && dist > 250) // Too far to jump
+        {
+            return new WaitingBehavior(mPlayer, 0.5f);
         }
         else
         {
-            entity.move(Entity::Left);
+            if(direction.x > 0)
+            {
+                dir = Entity::Right;
+            }
+            else
+            {
+                dir = Entity::Left;
+            }
         }
-
-        if(std::abs(direction.x) < 40)
+    }
+    else if(dist > 40) // Same level far
+    {
+        if(direction.x > 0)
         {
-            if(dist > 150 && dist < 250)  entity.jump();
-            else            return new WaitingBehavior(mPlayer, 0.5f);
+            dir = Entity::Right;
+        }
+        else
+        {
+            dir = Entity::Left;
         }
     }
     else
     {
         return new AttackingBehavior(mPlayer);
     }
+
+    entity.move(dir);
 
     return nullptr;
 }

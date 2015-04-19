@@ -99,7 +99,7 @@ void World::buildScene()
 
     // Ennemies
     std::unique_ptr<Zombie> zombie1(new Zombie(mTextures, mAIController));
-    zombie1->setPosition(800, 475);
+    zombie1->setPosition(610, 100);
     zombie1->setOrigin(75, 150);
     mSceneLayers[Foreground]->attachChild(std::move(zombie1));
 

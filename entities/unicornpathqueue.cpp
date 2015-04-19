@@ -18,12 +18,6 @@ std::vector<sf::Vector2f>& UnicornPathQueue::addPoint(sf::Vector2f point)
         auto ppos = mPlayer->getPosition();
         ppos.y -= 25.f;
 
-        if(distance(ppos, point) > mPointsSpace * 2.25f)
-        {
-            return mPoints;
-        }
-
-
         mPoints.push_back(ppos);
     }
 
@@ -32,8 +26,9 @@ std::vector<sf::Vector2f>& UnicornPathQueue::addPoint(sf::Vector2f point)
         if(mPoints.size() > 0)
         {
             float dist = distance(mPoints.back(), point);
-            if(dist >= mPointsSpace && dist < mPointsSpace*1.25f)
+            if(dist >= mPointsSpace)
             {
+                point = mPoints.back() + (mPointsSpace * unitVector(point - mPoints.back()));
                 mPoints.push_back(point);
             }
         }
