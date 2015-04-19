@@ -59,7 +59,8 @@ SOURCES += main.cpp \
     entities/uihealthpoints.cpp \
     states/pausestate.cpp \
     states/gameoverstate.cpp \
-    entities/creature.cpp
+    entities/creature.cpp \
+    entities/boss.cpp
 
 OTHER_FILES +=
 
@@ -114,6 +115,7 @@ HEADERS += \
     entities/uihealthpoints.h \
     states/pausestate.h \
     states/gameoverstate.h \
-    entities/creature.h
+    entities/creature.h \
+    entities/boss.h
 
 
