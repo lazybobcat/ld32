@@ -9,16 +9,16 @@ MovingBehavior::MovingBehavior(Player &player) :
 {
 }
 
-void MovingBehavior::init(Zombie &/*entity*/)
+void MovingBehavior::init(Creature &/*entity*/)
 {
 }
 
-void MovingBehavior::deinit(Zombie &/*entity*/)
+void MovingBehavior::deinit(Creature &/*entity*/)
 {
 }
 
 
-AIState* MovingBehavior::run(Zombie &entity, sf::Time dt, CommandQueue &commands)
+AIState* MovingBehavior::run(Creature &entity, sf::Time dt, CommandQueue &commands)
 {
     mTimer += dt;
 

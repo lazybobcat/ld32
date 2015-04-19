@@ -3,13 +3,8 @@
 #include <controllers/AIStates/aistate.h>
 
 Zombie::Zombie(TextureHolder &textures, AIController &controller) :
-    Entity(20),
-    mIsResting(false),
-    mIsAttacking(false),
-    mMovingAnimation(false),
-    mIsDying(false),
-    mAIController(controller),
-    mCurrentBehavior(nullptr)
+    Creature(controller, 20),
+    mMovingAnimation(false)
 {
     textures.get(Textures::ZombieWalking).setSmooth(false);
     textures.get(Textures::ZombieAttacking).setSmooth(false);
@@ -52,101 +47,31 @@ Zombie::Zombie(TextureHolder &textures, AIController &controller) :
 
 Zombie::~Zombie()
 {
-    if(mCurrentBehavior)
-    {
-        mCurrentBehavior->deinit(*this);
-        delete(mCurrentBehavior);
-    }
 }
 
-
-void Zombie::jump()
-{
-    if(!mIsJumping)
-    {
-        sf::Vector2f pos = getPosition();
-        pos.y -= 2.f;
-        setPosition(pos); // Hack to avoid unwated collisions with the platform
-        mVerticalVelocity = -450;
-        mIsJumping = true;
-        rest();
-    }
-}
 
 void Zombie::attack()
 {
-    mIsAttacking = true;
+    Creature::attack();
     mAnimations[Attacking].restart();
-}
-
-void Zombie::damage(int points)
-{
-    Entity::damage(points);
-
-    if(mHealthpoints <= 0) die();
 }
 
 void Zombie::knock()
 {
-    Entity::knock();
-    stop();
-    //mIsAttacking = false;
+    Creature::knock();
     mAnimations[Attacking].stop();
     mWaitingSprite.setColor(sf::Color::Red);
 }
 
 void Zombie::unknock()
 {
-    Entity::unknock();
+    Creature::unknock();
     mWaitingSprite.setColor(sf::Color(255,255,255, 255));
 }
-
-bool Zombie::isResting() const
-{
-    return mIsResting;
-}
-
-void Zombie::rest()
-{
-    if(!mIsResting)
-    {
-        mIsResting = true;
-        mRestingTime = sf::Time::Zero;
-    }
-}
-
-void Zombie::unrest()
-{
-    mIsResting = false;
-    mRestingTime = sf::Time::Zero;
-}
-
-void Zombie::die()
-{
-    mIsDying = true;
-}
-
 
 bool Zombie::isDestroyed() const
 {
     return mIsDying && mAnimations[Dying].isFinished() && mDepopTimer.asSeconds() >= 2.f;
-}
-
-
-void Zombie::setBehavior(AIState *behavior)
-{
-    if(mCurrentBehavior)
-    {
-        mCurrentBehavior->deinit(*this);
-        delete(mCurrentBehavior);
-        mCurrentBehavior = nullptr;
-    }
-
-    if(behavior)
-    {
-        mCurrentBehavior = behavior;
-        mCurrentBehavior->init(*this);
-    }
 }
 
 

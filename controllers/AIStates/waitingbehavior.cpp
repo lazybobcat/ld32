@@ -7,17 +7,17 @@ WaitingBehavior::WaitingBehavior(Player &player, float seconds) :
     mWait = sf::seconds(seconds);
 }
 
-void WaitingBehavior::init(Zombie &entity)
+void WaitingBehavior::init(Creature &entity)
 {
     entity.stop();
 }
 
-void WaitingBehavior::deinit(Zombie &/*entity*/)
+void WaitingBehavior::deinit(Creature &/*entity*/)
 {
 }
 
 
-AIState* WaitingBehavior::run(Zombie &entity, sf::Time dt, CommandQueue &commands)
+AIState* WaitingBehavior::run(Creature &entity, sf::Time dt, CommandQueue &commands)
 {
     mTimer += dt;
 

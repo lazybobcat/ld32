@@ -7,14 +7,21 @@ AttackingBehavior::AttackingBehavior(Player &player) :
 {
 }
 
-void AttackingBehavior::init(Zombie &/*entity*/)
+void AttackingBehavior::init(Creature &/*entity*/)
 {
 }
 
-void AttackingBehavior::deinit(Zombie &/*entity*/)
+void AttackingBehavior::deinit(Creature &/*entity*/)
 {
 }
 
+AIState* AttackingBehavior::run(Creature &entity, sf::Time dt, CommandQueue &commands)
+{
+    assert(dynamic_cast<Zombie*>(&entity) != nullptr);
+    Zombie& z = static_cast<Zombie&>(entity);
+
+    return run(z, dt, commands);
+}
 
 AIState* AttackingBehavior::run(Zombie &entity, sf::Time dt, CommandQueue &commands)
 {

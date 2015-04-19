@@ -11,9 +11,10 @@ class AttackingBehavior : public AIState
 public:
     AttackingBehavior(Player& player);
 
+    virtual AIState*    run(Creature& entity, sf::Time dt, CommandQueue& commands);
     virtual AIState*    run(Zombie& entity, sf::Time dt, CommandQueue& commands);
-    virtual void        init(Zombie& entity);
-    virtual void        deinit(Zombie& entity);
+    virtual void        init(Creature& entity);
+    virtual void        deinit(Creature& entity);
 
 private:
     sf::Time            mTimer;
