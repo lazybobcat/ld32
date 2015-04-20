@@ -86,7 +86,7 @@ bool GameState::handleEvent(const sf::Event &event)
     }
     else if(event.type == sf::Event::LostFocus)
     {
-        if(!mIsGameOver) requestStackPush(States::Pause);
+        //if(!mIsGameOver) requestStackPush(States::Pause);
     }
 
     return true;

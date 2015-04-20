@@ -4,8 +4,8 @@
 UnicornPathQueue::UnicornPathQueue(Player *player) :
     SceneNode(Category::UnicornPath),
     mPlayer(player),
-    mPointsLimit(10),
-    mPointsSpace(100.f)
+    mPointsLimit(20),
+    mPointsSpace(50.f)
 {
     clear();
 }

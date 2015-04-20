@@ -9,7 +9,7 @@ Unicorn::Unicorn(std::vector<sf::Vector2f> &path, TextureHolder &textures) :
     mPath(path),
     mIsTraveling(true),
     mSpeed(200.f),
-    mTravelTime(0.15f),
+    mTravelTime(0.07f),
     mTimeSinceLastPoint(sf::Time::Zero),
     mEmitter(nullptr)
 {

@@ -258,13 +258,13 @@ void FirstBoss::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) c
 {
     if(isDestroyed()) return;
 
-    if(mIsAttacking)
-    {
-        target.draw(mAnimations[Attacking], states);
-    }
-    else if(mIsDying)
+    if(mIsDying)
     {
         target.draw(mDeadSprite, states);
+    }
+    else if(mIsAttacking)
+    {
+        target.draw(mAnimations[Attacking], states);
     }
     else if(mMovingAnimation)
     {

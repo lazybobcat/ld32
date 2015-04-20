@@ -306,12 +306,12 @@ void World::handleCollisions()
 
                     if(life > zombie.getHealthpoints())
                     {
-                        shakeCamera();
                         mSounds.play(Sounds::ZombieHit);
                     }
 
                     if(zombie.getHealthpoints() <= 0)
                     {
+                        shakeCamera();
                         mPoints += zombie.getMaxHealthpoints();
                         if(zombie.isBoss())
                         {
